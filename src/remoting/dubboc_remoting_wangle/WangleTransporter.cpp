@@ -8,16 +8,18 @@
 namespace DUBBOC {
     namespace REMOTING {
 
-        const static ExtensionLoader::RegisterExtensionT <ITransporter, WangleTransporter> forRegiste(
-                "transport:wangle");
+        /**
+         * 注册一定要放在cpp中，否则当头文件被重复包含时会导致重复注册，从而引发异常
+         * */
+        EXTENSION_REGISTER(ITransporter,WangleTransporter);
 
-        shared_ptr <IServer>
-        WangleTransporter::bind(shared_ptr <URL> url, shared_ptr <IChannelHandler> handler)  {
+        shared_ptr<IServer>
+        WangleTransporter::bind(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
             return nullptr;
         }
 
-        shared_ptr <IClient>
-        WangleTransporter::connect(shared_ptr <URL> url, shared_ptr <IChannelHandler> handler)  {
+        shared_ptr<IClient>
+        WangleTransporter::connect(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
             return nullptr;
         }
 

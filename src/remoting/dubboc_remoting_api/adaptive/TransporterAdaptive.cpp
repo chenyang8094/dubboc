@@ -41,8 +41,6 @@ namespace DUBBOC {
             return extension->connect(url, handler);
         }
 
-        const static ExtensionLoader::RegisterExtensionAdaptiveT<ITransporter, TransporterAdaptive> forRegiste2(
-                "transport");
-
+        EXTENSION_ADAPTIVE_REGISTER(ITransporter,TransporterAdaptive);
     }
 }

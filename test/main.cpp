@@ -46,19 +46,24 @@ using namespace DUBBOC::REMOTING;
 
 int main(int argc, char **argv) {
 
-    auto extension = ExtensionLoader::getInstance()->LoadExtension<ITransporter>("transport:wangle");
+    auto extension = ExtensionLoader::getInstance()->LoadExtension<ITransporter>("ITransporter:WangleTransporter");
     if (extension != nullptr) {
         std::cout << "found the bean!" << std::endl;
     } else {
         std::cout << "not found the bean!" << std::endl;
     }
 
-    auto extension2 = ExtensionLoader::getInstance()->LoadExtensionAdaptive<ITransporter>("transport");
+    auto extension2 = ExtensionLoader::getInstance()->LoadExtensionAdaptive<ITransporter>("ITransporter:TransporterAdaptive");
     if (extension2 != nullptr) {
         std::cout << "found the bean!" << std::endl;
     } else {
         std::cout << "not found the bean!" << std::endl;
     }
+
+
+    URL url("dubbo","yunhai","1234","127.0.0.1",20021,"/index","key1","value1","key2","value2", (char *)nullptr);
+    std::cout << url.getProtocol() << std::endl;
+    std::cout << url.getParameter("key2","default") << std::endl;
 
     return 0;
 }

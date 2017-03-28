@@ -6,8 +6,12 @@
 #define PROJECT_IOCCONTAINER_H
 
 #include <iostream>
+#include <functional>
+#include <memory>
 #include <unordered_map>
+#include <map>
 #include <folly/RWSpinLock.h>
+#include <folly/dynamic.h>
 
 namespace DUBBOC {
     namespace CONTAINER {
@@ -34,13 +38,13 @@ namespace DUBBOC {
             template<class T>
             void RegisterType(const string &strKey) {
                 typedef T *I;
-                std::function < I() > function = Construct<I, T>::invoke;
+                std::function<I()> function = Construct<I, T>::invoke;
                 RegisterType(strKey, function);
             }
 
             template<class I, class T, typename... Ts>
             void RegisterType(const string &strKey) {
-                std::function < I * (Ts...) > function = Construct<I *, T, Ts...>::invoke;
+                std::function<I *(Ts...)> function = Construct<I *, T, Ts...>::invoke;
                 RegisterType(strKey, function);
             }
 
@@ -51,13 +55,13 @@ namespace DUBBOC {
                     return nullptr;
 
                 boost::any resolver = m_creatorMap[strKey];
-                std::function < I * () > function = boost::any_cast < std::function < I * () >> (resolver);
+                std::function<I *()> function = boost::any_cast<std::function<I *() >>(resolver);
 
                 return function();
             }
 
             template<class I>
-            std::shared_ptr <I> ResolveShared(const string &strKey) {
+            std::shared_ptr<I> ResolveShared(const string &strKey) {
                 auto b = Resolve<I>(strKey);
                 return std::shared_ptr<I>(b);
             }
@@ -69,13 +73,13 @@ namespace DUBBOC {
                     return nullptr;
 
                 boost::any resolver = m_creatorMap[strKey];
-                std::function < I * (Ts...) > function = boost::any_cast < std::function < I * (Ts...) >> (resolver);
+                std::function<I *(Ts...)> function = boost::any_cast<std::function<I *(Ts...) >>(resolver);
 
                 return function(Args...);
             }
 
             template<class I, typename... Ts>
-            std::shared_ptr <I> ResolveShared(const string &strKey, Ts... Args) {
+            std::shared_ptr<I> ResolveShared(const string &strKey, Ts... Args) {
                 auto b = Resolve<I, Ts...>(strKey, Args...);
                 return std::shared_ptr<I>(b);
             }
@@ -96,7 +100,7 @@ namespace DUBBOC {
             }
 
         private:
-            unordered_map <string, boost::any> m_creatorMap;
+            unordered_map<string, boost::any> m_creatorMap;
             folly::RWSpinLock rw_clk_;
         };
     }

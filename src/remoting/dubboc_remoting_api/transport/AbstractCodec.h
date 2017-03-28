@@ -1,0 +1,8 @@
+//
+// Created by 云海 on 2017/3/28.
+//
+
+#ifndef DUBBOC_ABSTRACTCODEC_H
+#define DUBBOC_ABSTRACTCODEC_H
+
+#endif //DUBBOC_ABSTRACTCODEC_H

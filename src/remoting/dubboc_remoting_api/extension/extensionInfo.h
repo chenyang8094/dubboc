@@ -5,8 +5,11 @@
 #ifndef DUBBOC_EXTENSIONINFO_H
 #define DUBBOC_EXTENSIONINFO_H
 
+/**
+ * 所有的扩展实现都必须被显式的被系统引用，否则将被编译器忽略
+ * */
 #include <remoting/dubboc_remoting_wangle/WangleTransporter.h>
 #include <remoting/dubboc_remoting_api/adaptive/TransporterAdaptive.h>
 
 
-#endif //PROJECT_EXTENSIONINFO_H
+#endif //DUBBOC_EXTENSIONINFO_H

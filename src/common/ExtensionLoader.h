@@ -8,9 +8,14 @@
 #include <iostream>
 #include <boost/any.hpp>
 #include <boost/function.hpp>
-//#include <container/IocContainer.h>
-
 #include <container/IocContainer.h>
+
+#define EXTENSION_REGISTER(I, T, ...) \
+         const static ExtensionLoader::RegisterExtensionT<I, T,##__VA_ARGS__>  I##T(#I":"#T)
+
+#define EXTENSION_ADAPTIVE_REGISTER(I, T, ...) \
+         const static ExtensionLoader::RegisterExtensionAdaptiveT<I, T,##__VA_ARGS__>  I##T(#I":"#T)
+
 
 namespace DUBBOC {
     namespace COMMON {
@@ -19,7 +24,6 @@ namespace DUBBOC {
 
         class ExtensionLoader {
         private:
-            /* 不允许用户自己创建IOC容器 */
             ExtensionLoader(void) {}
 
             ~ExtensionLoader(void) {}
@@ -30,7 +34,7 @@ namespace DUBBOC {
 
         public:
 
-            static ExtensionLoader *getInstance(){
+            static ExtensionLoader *getInstance() {
                 static ExtensionLoader instance;
                 return &instance;
             }
@@ -66,13 +70,13 @@ namespace DUBBOC {
             };
 
             template<class I>
-            std::shared_ptr <I> LoadExtension(const std::string &extensionName) {
+            std::shared_ptr<I> LoadExtension(const std::string &extensionName) {
                 auto container = IocContainer::getInstance();
                 return container->ResolveShared<I>(extensionName);
             }
 
             template<class I>
-            std::shared_ptr <I> LoadExtensionAdaptive(const std::string &extensionName) {
+            std::shared_ptr<I> LoadExtensionAdaptive(const std::string &extensionName) {
                 auto extensionAdaptiveName = extensionName + "@Adaptive";
                 auto container = IocContainer::getInstance();
                 return container->ResolveShared<I>(extensionAdaptiveName);
