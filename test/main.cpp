@@ -61,9 +61,11 @@ int main(int argc, char **argv) {
     }
 
 
-    URL url("dubbo","yunhai","1234","127.0.0.1",20021,"/index","key1","value1","key2","value2", (char *)nullptr);
+    URL url("dubbo","yunhai","1234","localhost",20021,"/index","key1","value1","key2","value2", (char *)nullptr);
     std::cout << url.getProtocol() << std::endl;
     std::cout << url.getParameter("key2","default") << std::endl;
+    std::cout << url.getIp() << std::endl;
+    std::cout << url.encode("hello world") << std::endl;
 
     return 0;
 }
