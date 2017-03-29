@@ -9,13 +9,13 @@ namespace DUBBOC {
         using namespace DUBBOC::CONTAINER;
 
         shared_ptr<IServer>
-        TransporterAdaptive::bind(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler)  {
+        TransporterAdaptive::bind(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
 
             if (url == nullptr) {
 
             }
 
-            std::string extName = url->getParameter("client", url->getParameter("transporter", "wangle"));
+            std::string extName = url->getParameter("client", url->getParameter("transporter", std::string("wangle")));
             if (extName.empty()) {
 
             }
@@ -26,12 +26,12 @@ namespace DUBBOC {
         }
 
         shared_ptr<IClient>
-        TransporterAdaptive::connect(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler)  {
+        TransporterAdaptive::connect(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
             if (url == nullptr) {
 
             }
 
-            std::string extName = url->getParameter("server", url->getParameter("transporter", "wangle"));
+            std::string extName = url->getParameter("server", url->getParameter("transporter", std::string("wangle")));
             if (extName.empty()) {
 
             }
@@ -41,6 +41,6 @@ namespace DUBBOC {
             return extension->connect(url, handler);
         }
 
-        EXTENSION_ADAPTIVE_REGISTER(ITransporter,TransporterAdaptive);
+        EXTENSION_ADAPTIVE_REGISTER(ITransporter, TransporterAdaptive);
     }
 }

@@ -61,11 +61,13 @@ int main(int argc, char **argv) {
     }
 
 
-    URL url("dubbo","yunhai","1234","localhost",20021,"/index","key1","value1","key2","value2", (char *)nullptr);
-    std::cout << url.getProtocol() << std::endl;
-    std::cout << url.getParameter("key2","default") << std::endl;
-    std::cout << url.getIp() << std::endl;
-    std::cout << url.encode("hello world") << std::endl;
+    auto url = make_shared<URL>("dubbo","yunhai","1234","localhost",20021,"/index","key1","value1","key2","value2", (char *)nullptr);
+    std::cout << url->getProtocol() << std::endl;
+    std::cout << url->getParameter("key2","default") << std::endl;
+    std::cout << url->getIp() << std::endl;
+    std::cout << url->encode("hello world") << std::endl;
+    std::cout << NetUtils::getLocalHost() << std::endl;
+    std::cout << url->buildString(true, true, true, true,"key1","p2", nullptr) << std::endl;
 
     return 0;
 }

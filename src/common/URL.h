@@ -16,7 +16,8 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <boost/regex.hpp>
-#include "URLUtils.h"
+#include <common/Utils/NetUtils.h>
+#include "common/Utils/URLUtils.h"
 #include "Constants.h"
 
 namespace DUBBOC {
@@ -408,6 +409,694 @@ namespace DUBBOC {
                 return d;
             }
 
+            float getParameter(const string &key, float defaultValue) {
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(key);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<float>(iter->second.asDouble());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                float f = stof(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(key, f));
+                numbers_rwSpinLock_.unlock();
+                return f;
+            }
+
+            long getParameter(const string &key, long defaultValue) {
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(key);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<long>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                long l = stol(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(key, l));
+                numbers_rwSpinLock_.unlock();
+                return l;
+            }
+
+            int getParameter(const string &key, int defaultValue) {
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(key);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<int>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                int i = stoi(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(key, i));
+                numbers_rwSpinLock_.unlock();
+                return i;
+            }
+
+            short getParameter(const string &key, short defaultValue) {
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(key);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<short>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                short s = static_cast<short>(stoi(value));
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(key, s));
+                numbers_rwSpinLock_.unlock();
+                return s;
+            }
+
+            unsigned char getParameter(const string &key, unsigned char defaultValue) {
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(key);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<unsigned char>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                unsigned char c = static_cast<unsigned char>(stoi(value));
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(key, c));
+                numbers_rwSpinLock_.unlock();
+                return c;
+            }
+
+            float getPositiveParameter(const string &key, float defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                float value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            double getPositiveParameter(const string &key, double defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                double value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+
+            long getPositiveParameter(const string &key, long defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                long value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            int getPositiveParameter(const string &key, int defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                int value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            short getPositiveParameter(const string &key, short defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                short value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            unsigned char getPositiveParameter(const string &key, unsigned char defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                unsigned char value = getParameter(key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            char getPositiveParameter(const string &key, char defaultValue) {
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                return value.at(0);
+            }
+
+            bool getParameter(const string &key, bool defaultValue) {
+                string value = getParameter(key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                if (value == "true") {
+                    return true;
+                } else if (value == "false") {
+                    return false;
+                } else {
+                    return defaultValue;
+                }
+            }
+
+            bool hasParameter(const string &key) {
+                string value = getParameter(key);
+                return !value.empty();
+            }
+
+            string getMethodParameterAndDecoded(const string &method, const string &key) {
+                return URL::decode(getMethodParameter(method, key));
+            }
+
+            string getMethodParameterAndDecoded(const string &method, const string &key, const string &defaultValue) {
+                return URL::decode(getMethodParameter(method, key, defaultValue));
+            }
+
+
+            string getMethodParameter(const string &method, const string &key) {
+                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
+                auto iter = parameters_->find(method + "." + key);
+                if (iter == parameters_->end()) {
+                    return getParameter(key);
+                }
+                return iter->second;
+            }
+
+            string getMethodParameter(const string &method, const string &key, const string &defaultValue) {
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            double getMethodParameter(const string &method, const string &key, double defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return iter->second.asDouble();
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                double d = stod(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, d));
+                numbers_rwSpinLock_.unlock();
+                return d;
+            }
+
+            float getMethodParameter(const string &method, const string &key, float defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<float>(iter->second.asDouble());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                float f = stof(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, f));
+                numbers_rwSpinLock_.unlock();
+                return f;
+            }
+
+            long getMethodParameter(const string &method, const string &key, long defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<long>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                long l = stol(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, l));
+                numbers_rwSpinLock_.unlock();
+                return l;
+            }
+
+            int getMethodParameter(const string &method, const string &key, int defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<int>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                int i = stoi(value);
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, i));
+                numbers_rwSpinLock_.unlock();
+                return i;
+            }
+
+            short getMethodParameter(const string &method, const string &key, short defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<short>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                short s = static_cast<short>(stoi(value));
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, s));
+                numbers_rwSpinLock_.unlock();
+                return s;
+            }
+
+            unsigned char getMethodParameter(const string &method, const string &key, unsigned char defaultValue) {
+                string methodKey = method + "." + key;
+                numbers_rwSpinLock_.lock_shared();
+                auto iter = getNumbers()->find(methodKey);
+                if (iter != getNumbers()->end()) {
+                    numbers_rwSpinLock_.unlock_shared();
+                    return static_cast<unsigned char>(iter->second.asInt());
+                }
+                numbers_rwSpinLock_.unlock_shared();
+
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                unsigned char c = static_cast<unsigned char>(stoi(value));
+                numbers_rwSpinLock_.lock();
+                getNumbers()->insert(make_pair(methodKey, c));
+                numbers_rwSpinLock_.unlock();
+                return c;
+            }
+
+            double getMethodPositiveParameter(const string &method, const string &key, double defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                double value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+
+            float getMethodPositiveParameter(const string &method, const string &key, float defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                float value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            long getMethodPositiveParameter(const string &method, const string &key, long defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                long value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            int getMethodPositiveParameter(const string &method, const string &key, int defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                int value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            short getMethodPositiveParameter(const string &method, const string &key, short defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                short value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            unsigned char
+            getMethodPositiveParameter(const string &method, const string &key, unsigned char defaultValue) {
+                if (defaultValue <= 0) {
+                    throw std::invalid_argument("defaultValue <= 0");
+                }
+                unsigned char value = getMethodParameter(method, key, defaultValue);
+                if (value <= 0) {
+                    return defaultValue;
+                }
+                return value;
+            }
+
+            char getMethodParameter(const string &method, const string &key, char defaultValue) {
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                return value.at(0);
+            }
+
+            bool getMethodParameter(const string &method, const string &key, bool defaultValue) {
+                string value = getMethodParameter(method, key);
+                if (value.empty()) {
+                    return defaultValue;
+                }
+                if (value == "true") {
+                    return true;
+                } else if (value == "false") {
+                    return false;
+                } else {
+                    return defaultValue;
+                }
+            }
+
+            bool hasMethodParameter(const string &method, const string &key) {
+                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
+                if (method.empty()) {
+                    string suffix = std::string(".") + key;
+                    for (auto &it : *parameters_) {
+                        if (boost::algorithm::ends_with(it.first, suffix)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                if (key.empty()) {
+                    string prefix = method + ".";
+                    for (auto &it : *parameters_) {
+                        if (boost::algorithm::starts_with(it.first, prefix)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                string value = getMethodParameter(method, key);
+                return !value.empty();
+            }
+
+            bool isLocalHost() {
+                return NetUtils::isLocalHost(host_) || getParameter(Constants::LOCALHOST_KEY, false);
+            }
+
+            bool isAnyHost() {
+                return Constants::ANYHOST_VALUE == host_ || getParameter(Constants::ANYHOST_KEY, false);
+            }
+
+            shared_ptr<URL> addParameter(const string &key, const string &value) {
+                if (key.empty() || value.empty()) {
+                    return shared_from_this();
+                }
+                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
+
+                // 如果没有修改，直接返回。
+                auto iter = getParameters()->find(key);
+                if (iter != getParameters()->end()) {
+                    if (value == iter->second) {
+                        return shared_from_this();
+                    }
+                }
+                auto map = make_shared<unordered_map<string, string>>(*parameters_);
+
+                map->insert(make_pair(key, value));
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
+            }
+
+
+            shared_ptr<URL> addParameterAndEncoded(const string &key, const string &value) {
+                if (value.empty()) {
+                    return shared_from_this();
+                }
+                return addParameter(key, encode(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, bool value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, char value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, unsigned char value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, short value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, int value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, long value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, float value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameter(const string &key, double value) {
+                return addParameter(key, to_string(value));
+            }
+
+            shared_ptr<URL> addParameterIfAbsent(const string &key, const string &value) {
+                if (key.empty() || value.empty()) {
+                    return shared_from_this();
+                }
+                if (hasParameter(key)) {
+                    return shared_from_this();
+                }
+                auto map = make_shared<unordered_map<string, string>>(*parameters_);
+                map->insert(make_pair(key, value));
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
+            }
+
+            /**
+             * Add parameters to a new url.
+             *
+             * @param parameters
+             * @return A new URL
+             */
+            shared_ptr<URL> addParameters(shared_ptr<unordered_map<string, string>> parameters) {
+                if (parameters == nullptr || parameters->empty()) {
+                    return shared_from_this();
+                }
+
+                bool hasAndEqual = true;
+
+                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
+                for (auto &it : *parameters) {
+                    auto iter = getParameters()->find(it.first);
+                    if (iter == getParameters()->end() || it.second != iter->second) {
+                        hasAndEqual = false;
+                        break;
+                    }
+                }
+
+                // 如果没有修改，直接返回。
+                if (hasAndEqual) return shared_from_this();
+
+                auto map = make_shared<unordered_map<string, string>>(*parameters_);
+                for (auto &it : *parameters) {
+                    map->insert(make_pair(it.first, it.second));
+                }
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
+            }
+
+            shared_ptr<URL> addParametersIfAbsent(shared_ptr<unordered_map<string, string>> parameters) {
+                if (parameters == nullptr || parameters->empty()) {
+                    return shared_from_this();
+                }
+
+                auto map = make_shared<unordered_map<string, string>>(*parameters_);
+                for (auto &it : *parameters) {
+                    map->insert(make_pair(it.first, it.second));
+                }
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
+            }
+
+            shared_ptr<URL> addParameters(const char *p1, ...) {
+                if (p1 == nullptr) {
+                    return shared_from_this();
+                }
+                uint8_t argc = 0;
+                va_list args;
+                va_start(args, p1);
+                va_list argsbak;
+                va_copy(argsbak, args);
+                char *doarg = nullptr;
+                do {
+                    doarg = va_arg(args, char *);
+                    if (doarg != nullptr) {
+                        argc++;
+                    }
+                } while (doarg);
+                va_end(args);
+                if (argc % 2 != 0) {
+                    throw std::invalid_argument("Map pairs can not be odd number.");
+                }
+
+                auto map = make_shared<unordered_map<string, string>>();
+
+                while (argc) {
+                    char *pair_0 = va_arg(argsbak, char *);
+                    char *pair_1 = va_arg(argsbak, char *);
+                    if (this->parameters_) {
+                        map->insert(std::make_pair(pair_0, pair_1));
+                    }
+                    argc -= 2;
+                }
+                va_end(argsbak);
+                return addParameters(map);
+            }
+
+            shared_ptr<URL> removeParameters(const char *p1, ...) {
+                if (p1 == nullptr) {
+                    return shared_from_this();
+                }
+
+                auto map = make_shared<unordered_map<string, string>>(*getParameters());
+
+                map->erase(p1);
+
+                va_list args;
+                va_start(args, p1);
+                char *doarg = nullptr;
+                do {
+                    doarg = va_arg(args, char *);
+                    if (doarg) {
+                        map->erase(doarg);
+                    }
+                } while (doarg);
+                va_end(args);
+
+                if (map->size() == getParameters()->size()) {
+                    return shared_from_this();
+                }
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
+            }
+
+            shared_ptr<URL> removeParameter(const string &key) {
+                if (key.empty()) {
+                    return shared_from_this();
+                }
+                return removeParameters(key.c_str(), nullptr);
+            }
+
+            shared_ptr<URL> clearParameters() {
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_,
+                                        make_shared<unordered_map<string, string>>());
+            }
+
+            string getRawParameter(const string &key) {
+                if (key == "protocol")
+                    return protocol_;
+                if (key == "username")
+                    return username_;
+                if (key == "password")
+                    return password_;
+                if (key == "host")
+                    return host_;
+                if (key == "port")
+                    return to_string(port_);
+                if (key == "path")
+                    return path_;
+                return getParameter(key);
+            }
+
+            shared_ptr<unordered_map<string, string>> toMap() {
+                auto map = make_shared<unordered_map<string, string>>();
+                if (!protocol_.empty())
+                    map->insert(make_pair("protocol", protocol_));
+                if (!username_.empty())
+                    map->insert(make_pair("username", username_));
+                if (!password_.empty())
+                    map->insert(make_pair("password", password_));
+                if (!host_.empty())
+                    map->insert(make_pair("host", host_));
+                if (port_ > 0)
+                    map->insert(make_pair("port", to_string(port_)));
+                if (!path_.empty())
+                    map->insert(make_pair("path", path_));
+                return map;
+            }
 
             static shared_ptr<URL> valueOf(const string &url) {
                 string protocol = "";
@@ -434,6 +1123,163 @@ namespace DUBBOC {
                     return "";
                 }
                 return Base64::urlDecode(value);
+            }
+
+            string getServiceInterface() {
+                return getParameter(Constants::INTERFACE_KEY, path_);
+            }
+
+            shared_ptr<URL> setServiceInterface(const string &service) {
+                return addParameter(Constants::INTERFACE_KEY, service);
+            }
+
+            string getServiceKey() {
+                string inf = getServiceInterface();
+                if (inf.empty()) return "";
+                std::ostringstream os;
+
+                string group = getParameter(Constants::GROUP_KEY);
+                if (!group.empty()) {
+                    os << group << "/";
+                }
+                os << inf;
+                string version = getParameter(Constants::VERSION_KEY);
+                if (!version.empty()) {
+                    os << ":" << version;
+                }
+                return os.str();
+            }
+
+            void buildParameters(std::ostringstream &os, bool concat, const list<string> &params) {
+                if (getParameters() != nullptr && getParameters()->size() > 0) {
+                    bool first = true;
+                    for (auto &it : *getParameters()) {
+                        if (!it.first.empty() &&
+                            (params.empty() || std::find(params.begin(), params.end(), it.first) != params.end())) {
+                            if (first) {
+                                if (concat) {
+                                    os << "?";
+                                }
+                                first = false;
+                            } else {
+                                os << "&";
+                            }
+                            os << it.first;
+                            os << "=";
+                            os << (it.second.empty() ? "" : boost::algorithm::trim_copy(it.second));
+                        }
+                    }
+                }
+            }
+
+            string buildString(bool appendUser, bool appendParameter, bool useIP, bool useService, ...) {
+                std::ostringstream os;
+
+                if (!protocol_.empty()) {
+                    os << protocol_ << "://";
+                }
+                if (appendUser && !username_.empty()) {
+                    os << username_;
+                    if (!password_.empty()) {
+                        os << ":";
+                        os << password_;
+                    }
+                    os << "@";
+                }
+                string host = "";
+                if (useIP) {
+                    host = getIp();
+                } else {
+                    host = getHost();
+                }
+                if (!host.empty()) {
+                    os << host;
+                    if (port_ > 0) {
+                        os << ":";
+                        os << port_;
+                    }
+                }
+                string path = "";
+                if (useService) {
+                    path = getServiceKey();
+                } else {
+                    path = getPath();
+                }
+                if (!path.empty()) {
+                    os << "/";
+                    os << path_;
+                }
+                if (appendParameter) {
+                    list<string> params;
+                    va_list args;
+                    va_start(args, useService);
+                    char *arg = nullptr;
+                    do {
+                        arg = va_arg(args, char *);
+                        if (arg) {
+                            params.push_back(arg);
+                        }
+                    } while (arg);
+                    va_end(args);
+                    buildParameters(os, true, params);
+                }
+                return os.str();
+            }
+
+            folly::SocketAddress toInetSocketAddress() {
+                return folly::SocketAddress(host_, port_);
+            }
+
+            string toServiceString() {
+                return buildString(true, false, true, true);
+            }
+
+
+            bool operator==(shared_ptr<URL> url) {
+                if (url == shared_from_this()) {
+                    return true;
+                }
+
+                if (url == nullptr) {
+                    return false;
+                }
+
+                if (host_ != url->host_) {
+                    return false;
+                }
+
+                if (parameters_ == nullptr) {
+                    if (url->parameters_ != nullptr) {
+                        return false;
+                    }
+                } else {
+                    if (url->parameters_ == nullptr) {
+                        return false;
+                    } else if (*parameters_ != *(url->parameters_)) {
+                        return false;
+                    }
+                }
+
+                if(username_ != url->username_){
+                    return false;
+                }
+
+                if(protocol_ != url->protocol_){
+                    return false;
+                }
+
+                if(password_ != url->password_){
+                    return false;
+                }
+
+                if(port_ != url->port_){
+                    return false;
+                }
+
+                if(path_ != url->path_){
+                    return false;
+                }
+                return true;
             }
 
         private:
