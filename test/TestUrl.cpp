@@ -546,7 +546,7 @@ TEST_F(TestUrl, test_Localhost) {
     EXPECT_EQ(url->getHost(), "127.0.0.1");
     EXPECT_TRUE(url->isLocalHost());
 
-     url = URL::valueOf("dubbo://127.0.1.1:20880");
+    url = URL::valueOf("dubbo://127.0.1.1:20880");
     EXPECT_EQ(url->getHost(), "127.0.1.1");
     EXPECT_TRUE(url->isLocalHost());
 

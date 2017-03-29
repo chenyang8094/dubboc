@@ -891,17 +891,18 @@ namespace DUBBOC {
                 if (key.empty() || value.empty()) {
                     return shared_from_this();
                 }
-                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
 
+                parameters_rwSpinLock_.lock_shared();
                 // 如果没有修改，直接返回。
                 auto iter = getParameters()->find(key);
                 if (iter != getParameters()->end()) {
                     if (value == iter->second) {
+                        parameters_rwSpinLock_.unlock_shared();
                         return shared_from_this();
                     }
                 }
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
-
+                parameters_rwSpinLock_.unlock_shared();
                 (*map)[key] = value;
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
@@ -953,8 +954,11 @@ namespace DUBBOC {
                 if (hasParameter(key)) {
                     return shared_from_this();
                 }
+
+                parameters_rwSpinLock_.lock_shared();
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
-                map->insert(make_pair(key, value));
+                parameters_rwSpinLock_.unlock_shared();
+                (*map)[key] = value;
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
 
@@ -971,7 +975,7 @@ namespace DUBBOC {
 
                 bool hasAndEqual = true;
 
-                folly::RWSpinLock::ReadHolder readHolder(parameters_rwSpinLock_);
+                parameters_rwSpinLock_.lock_shared();
                 for (auto &it : *parameters) {
                     auto iter = getParameters()->find(it.first);
                     if (iter == getParameters()->end() || it.second != iter->second) {
@@ -979,11 +983,13 @@ namespace DUBBOC {
                         break;
                     }
                 }
-
+                parameters_rwSpinLock_.unlock_shared();
                 // 如果没有修改，直接返回。
                 if (hasAndEqual) return shared_from_this();
 
+                parameters_rwSpinLock_.lock_shared();
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
+                parameters_rwSpinLock_.unlock_shared();
                 for (auto &it : *parameters) {
                     (*map)[it.first] = it.second;
                 }
@@ -995,14 +1001,16 @@ namespace DUBBOC {
                     return shared_from_this();
                 }
 
+                parameters_rwSpinLock_.lock_shared();
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
+                parameters_rwSpinLock_.unlock_shared();
                 for (auto &it : *parameters) {
-                    map->insert(make_pair(it.first, it.second));
+                    map->insert(make_pair(it.first, it.second));// 不会覆盖已经存在
                 }
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
 
-            shared_ptr<URL> addParameters(const char *p1,const char * p2, ...) {
+            shared_ptr<URL> addParameters(const char *p1, const char *p2, ...) {
                 if (p1 == nullptr || p2 == nullptr) {
                     return shared_from_this();
                 }
@@ -1024,8 +1032,8 @@ namespace DUBBOC {
                 }
 
                 auto map = make_shared<unordered_map<string, string>>();
-                if(this->parameters_){
-                    map->insert(make_pair(p1,p2));
+                if (this->parameters_) {
+                    map->insert(make_pair(p1, p2));
                 }
 
                 while (argc) {
