@@ -32,7 +32,7 @@ namespace DUBBOC {
         public:
             URL(const string &protocol, const string &username, const string &password, const string &host,
                 uint16_t port, const string &path, shared_ptr<unordered_map<string, string>> parameters) {
-                if (username.empty()) {
+                if (username.empty() && !password.empty()) {
                     throw std::invalid_argument("Invalid url, password without username!");
                 }
                 this->protocol_ = protocol;
@@ -309,7 +309,17 @@ namespace DUBBOC {
             }
 
             std::string toString() {
-                return "";
+                if (!str_.empty()) {
+                    return str_;
+                }
+                return str_ = buildString(false, true, false, false, nullptr);
+            }
+
+            std::string toFullString() {
+                if (!full_.empty()) {
+                    return full_;
+                }
+                return full_ = buildString(true, true, false, false, nullptr);
             }
 
 
@@ -892,7 +902,7 @@ namespace DUBBOC {
                 }
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
 
-                map->insert(make_pair(key, value));
+                (*map)[key] = value;
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
 
@@ -975,7 +985,7 @@ namespace DUBBOC {
 
                 auto map = make_shared<unordered_map<string, string>>(*parameters_);
                 for (auto &it : *parameters) {
-                    map->insert(make_pair(it.first, it.second));
+                    (*map)[it.first] = it.second;
                 }
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
@@ -992,13 +1002,13 @@ namespace DUBBOC {
                 return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
 
-            shared_ptr<URL> addParameters(const char *p1, ...) {
-                if (p1 == nullptr) {
+            shared_ptr<URL> addParameters(const char *p1,const char * p2, ...) {
+                if (p1 == nullptr || p2 == nullptr) {
                     return shared_from_this();
                 }
                 uint8_t argc = 0;
                 va_list args;
-                va_start(args, p1);
+                va_start(args, p2);
                 va_list argsbak;
                 va_copy(argsbak, args);
                 char *doarg = nullptr;
@@ -1014,6 +1024,9 @@ namespace DUBBOC {
                 }
 
                 auto map = make_shared<unordered_map<string, string>>();
+                if(this->parameters_){
+                    map->insert(make_pair(p1,p2));
+                }
 
                 while (argc) {
                     char *pair_0 = va_arg(argsbak, char *);
@@ -1025,6 +1038,23 @@ namespace DUBBOC {
                 }
                 va_end(argsbak);
                 return addParameters(map);
+            }
+
+            shared_ptr<URL> removeParameters(const list<string> &keys) {
+                if (keys.empty()) {
+                    return shared_from_this();
+                }
+
+                auto map = make_shared<unordered_map<string, string>>(*getParameters());
+
+                for (auto &it: keys) {
+                    map->erase(it);
+                }
+
+                if (map->size() == getParameters()->size()) {
+                    return shared_from_this();
+                }
+                return make_shared<URL>(protocol_, username_, password_, host_, port_, path_, map);
             }
 
             shared_ptr<URL> removeParameters(const char *p1, ...) {
@@ -1098,7 +1128,7 @@ namespace DUBBOC {
                 return map;
             }
 
-            static shared_ptr<URL> valueOf(const string &url) {
+            static shared_ptr<URL> valueOf(string url) {
                 string protocol = "";
                 string username = "";
                 string password = "";
@@ -1107,7 +1137,69 @@ namespace DUBBOC {
                 string path = "";
                 shared_ptr<unordered_map<string, string>> parameters = nullptr;
 
+                auto i = url.find("?");
+                if (i != string::npos) {
+                    list<string> parts;
+                    boost::regex e(string("\\&"), boost::regbase::normal | boost::regbase::icase);
+                    string value = url.substr(i + 1, url.length());
+                    boost::regex_split(std::back_inserter(parts), value, e);
+                    parameters = make_shared<unordered_map<string, string>>();
+                    for (auto &it : parts) {
+                        it = boost::algorithm::trim_copy(it);
+                        if (!it.empty()) {
+                            auto j = it.find('=');
+                            if (j != string::npos) {
+                                parameters->insert(make_pair(it.substr(0, j), it.substr(j + 1, it.length())));
+                            } else {
+                                parameters->insert(make_pair(it, it));
+                            }
+                        }
+                    }
+                    url = url.substr(0, i);
+                }
 
+                i = url.find("://");
+                if (i != string::npos) {
+                    if (i == 0) {
+                        throw std::invalid_argument(string("url missing protocol: \"") + url + "\"");
+                    }
+                    protocol = url.substr(0, i);
+                    url = url.substr(i + 3, url.length());
+                } else {
+                    // case: file:/path/to/file.txt
+                    i = url.find(":/");
+                    if (i != string::npos) {
+                        if (i == 0) {
+                            throw std::invalid_argument(string("url missing protocol: \"") + url + "\"");
+                        }
+                        protocol = url.substr(0, i);
+                        url = url.substr(i + 1, url.length());
+                    }
+                }
+
+                i = url.find("/");
+                if (i != string::npos) {
+                    path = url.substr(i + 1, url.length());
+                    url = url.substr(0, i);
+                }
+
+                i = url.find("@");
+                if (i != string::npos) {
+                    username = url.substr(0, i);
+                    auto j = username.find(":");
+                    if (j != string::npos) {
+                        password = username.substr(j + 1, username.length());
+                        username = username.substr(0, j);
+                    }
+                    url = url.substr(i + 1);
+                }
+
+                i = url.find(":");
+                if (i != string::npos && i > 0 && i < url.length() - 1) {
+                    port = static_cast<uint16_t>(stoi(url.substr(i + 1)));
+                    url = url.substr(0, i);
+                }
+                if (url.length() > 0) host = url;
                 return make_shared<URL>(protocol, username, password, host, port, path, parameters);
             }
 
@@ -1260,26 +1352,23 @@ namespace DUBBOC {
                     }
                 }
 
-                if(username_ != url->username_){
+                if (username_ != url->username_) {
                     return false;
                 }
 
-                if(protocol_ != url->protocol_){
+                if (protocol_ != url->protocol_) {
                     return false;
                 }
 
-                if(password_ != url->password_){
+                if (password_ != url->password_) {
                     return false;
                 }
 
-                if(port_ != url->port_){
+                if (port_ != url->port_) {
                     return false;
                 }
 
-                if(path_ != url->path_){
-                    return false;
-                }
-                return true;
+                return path_ == url->path_;
             }
 
         private:
@@ -1296,16 +1385,15 @@ namespace DUBBOC {
             shared_ptr<unordered_map<string, folly::dynamic>> numbers_{nullptr};// 缓存参数的各种类型的值
             shared_ptr<unordered_map<string, shared_ptr<URL>>> urls_{nullptr};
             string ip_{""};
-            volatile string full_{""};
-            volatile string identity_{""};
-            volatile string parameter_{""};
-            volatile string str_{""};
+            string full_{""};
+            string identity_{""};
+            string parameter_{""};
+            string str_{""};
 
         private:
             folly::RWSpinLock parameters_rwSpinLock_;
             folly::RWSpinLock numbers_rwSpinLock_;
             folly::RWSpinLock urls_rwSpinLock_;
-
         };
     }
 }

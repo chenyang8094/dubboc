@@ -76,7 +76,7 @@ namespace DUBBOC {
                     return false;
                 }
                 boost::regex e(LOCAL_IP_PATTERN, boost::regbase::normal | boost::regbase::icase);
-                return boost::regex_match(host, e);
+                return boost::regex_match(host, e) || boost::algorithm::iequals(host,"localhost");
             }
 
             static bool isAnyHost(const string &host) {
