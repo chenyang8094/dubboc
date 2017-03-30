@@ -5,6 +5,9 @@
 #include <gtest/gtest.h>
 #include "common/ExtensionLoader.h"
 #include "common/ExtensionHeader.h"
+#include "remoting/dubboc_remoting_api/exchange/Request.h"
+#include "remoting/dubboc_remoting_api/exchange/support/DefaultFuture.h"
+
 
 using namespace std;
 using namespace DUBBOC::COMMON;
@@ -26,4 +29,5 @@ TEST_F(TestExtensionLoader, test){
 
     auto extension2 = ExtensionLoader::getInstance()->LoadExtensionAdaptive<ITransporter>("ITransporter:TransporterAdaptive");
     EXPECT_TRUE(extension2 != nullptr);
+
 }

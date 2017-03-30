@@ -5,13 +5,19 @@
 #ifndef DUBBOC_ITRANSPORTER_H
 #define DUBBOC_ITRANSPORTER_H
 
-#include "IServer.h"
-#include "IClient.h"
+#include <memory>
+#include <common/URL.h>
 
 namespace DUBBOC {
     namespace REMOTING {
+        using namespace std;
         using namespace DUBBOC::COMMON;
 
+        class IServer;
+
+        class IClient;
+
+        class IChannelHandler;
 
         class ITransporter {
         public:

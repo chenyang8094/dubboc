@@ -146,7 +146,7 @@ namespace DUBBOC {
 
             static const string LOADBALANCE_KEY;
 
-            // key for router type, for e.g., "script"/"file",  corresponding to ScriptRouterFactory.NAME, FileRouterFactory.NAME 
+            // key for router type, for e.g., "script"/"file",  corresponding to ScriptRouterFactory.NAME, FileRouterFactory.NAME
             static const string ROUTER_KEY;
 
             static const string CLUSTER_KEY;
@@ -396,6 +396,8 @@ namespace DUBBOC {
             static const string FORCE_KEY;
 
             static const string MERGER_KEY;
+
+            static const string OBJECT_MARK_KRY;
 
             /**
              * 集群时是否排除非available的invoker

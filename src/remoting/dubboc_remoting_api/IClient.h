@@ -10,7 +10,7 @@
 
 namespace DUBBOC {
     namespace REMOTING {
-        class IClient : public IEndpoint, public IChannel {
+        class IClient : virtual public IEndpoint, public IChannel {
         public:
             virtual void reconnect() = 0;
         };

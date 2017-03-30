@@ -11,7 +11,8 @@
 
 namespace DUBBOC {
     namespace REMOTING {
-        using  namespace DUBBOC::COMMON;
+        using namespace DUBBOC::COMMON;
+
         class IEndpoint {
         public:
             /**

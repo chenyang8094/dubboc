@@ -10,7 +10,6 @@
 namespace DUBBOC {
     namespace REMOTING {
 
-
         class TransporterAdaptive : public ITransporter {
 
         public:

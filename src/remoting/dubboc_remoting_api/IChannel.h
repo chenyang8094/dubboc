@@ -7,10 +7,11 @@
 
 #include <folly/SocketAddress.h>
 #include <folly/dynamic.h>
+#include "IEndpoint.h"
 
 namespace DUBBOC {
     namespace REMOTING {
-        class IChannel {
+        class IChannel : virtual public IEndpoint {
         public:
             virtual ~IChannel() {}
 

@@ -6,11 +6,13 @@
 #define DUBBOC_ISERVER_H
 
 #include "IEndpoint.h"
-#include "IChannel.h"
 
 namespace DUBBOC {
     namespace REMOTING {
-        class IServer : public IEndpoint {
+
+        class IChannel;
+
+        class IServer : virtual public IEndpoint {
         public:
             /**
              * is bound.
@@ -33,7 +35,7 @@ namespace DUBBOC {
              * @param remoteAddress
              * @return channel
              */
-            virtual std::shared_ptr<IChannel> getChannel(const folly::SocketAddress & remoteAddress) = 0;
+            virtual std::shared_ptr<IChannel> getChannel(const folly::SocketAddress &remoteAddress) = 0;
         };
     }
 }

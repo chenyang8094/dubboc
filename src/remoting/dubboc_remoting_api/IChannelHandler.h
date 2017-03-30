@@ -7,12 +7,12 @@
 
 #include <iostream>
 #include <folly/dynamic.h>
-#include "IChannel.h"
 
 namespace DUBBOC {
     namespace REMOTING {
         using namespace std;
 
+        class IChannel;
         class IChannelHandler {
         public:
             virtual ~IChannelHandler() {}
