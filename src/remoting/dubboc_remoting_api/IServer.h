@@ -26,7 +26,7 @@ namespace DUBBOC {
              *
              * @return channels
              */
-            virtual std::list<std::shared_ptr<IChannel>> getChannels() = 0;
+            virtual std::shared_ptr<std::list<std::shared_ptr<IChannel>>> getChannels() = 0;
 
 
             /**

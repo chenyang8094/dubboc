@@ -35,7 +35,7 @@ namespace DUBBOC {
                 channels_rwlock.unlock();
                 if (!daemon_thread_flag.test_and_set(std::memory_order_acquire)) {
                     thread daemon([]() {
-
+                        RemotingInvocationTimeoutScan();
                     });
                     daemon.detach();
                 }

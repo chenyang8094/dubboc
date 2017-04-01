@@ -15,6 +15,9 @@ namespace DUBBOC {
 
         class IEndpoint {
         public:
+            virtual ~IEndpoint() {}
+
+        public:
             /**
             * get url.
             *
@@ -60,7 +63,7 @@ namespace DUBBOC {
             /**
              * Graceful close the channel.
              */
-            virtual void close(int timeout) = 0;
+            virtual void close(uint32_t timeout) = 0;
 
             /**
              * is closed.

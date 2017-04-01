@@ -81,6 +81,11 @@ namespace DUBBOC {
                 auto container = IocContainer::getInstance();
                 return container->ResolveShared<I>(extensionAdaptiveName);
             }
+
+            bool hasExtension(const std::string &extensionName) {
+                auto container = IocContainer::getInstance();
+                return container->hasType(extensionName);
+            }
         };
     }
 }

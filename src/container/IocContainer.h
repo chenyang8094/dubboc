@@ -84,6 +84,13 @@ namespace DUBBOC {
                 return std::shared_ptr<I>(b);
             }
 
+            bool hasType(const string &strKey) {
+                folly::RWSpinLock::ReadHolder readHolder(rw_clk_);
+                if (m_creatorMap.find(strKey) != m_creatorMap.end())
+                    return true;
+                return false;
+            }
+
         private:
 
             template<typename I, typename T, typename... Ts>

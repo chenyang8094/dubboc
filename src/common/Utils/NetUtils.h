@@ -44,9 +44,12 @@
 #include <boost/algorithm/string.hpp>
 #include <folly/SocketAddress.h>
 
+
+
 namespace DUBBOC {
     namespace COMMON {
         using namespace std;
+
 
         class NetUtils {
         public:
@@ -76,7 +79,7 @@ namespace DUBBOC {
                     return false;
                 }
                 boost::regex e(LOCAL_IP_PATTERN, boost::regbase::normal | boost::regbase::icase);
-                return boost::regex_match(host, e) || boost::algorithm::iequals(host,"localhost");
+                return boost::regex_match(host, e) || boost::algorithm::iequals(host, "localhost");
             }
 
             static bool isAnyHost(const string &host) {
@@ -119,6 +122,8 @@ namespace DUBBOC {
                 return address == nullptr ? LOCALHOST : address->str();
             }
 
+            static string filterLocalHost(const string &host) ;
+
             /**
              * 遍历本地网卡，返回第一个合理的IP。
              *
@@ -157,6 +162,7 @@ namespace DUBBOC {
                 os << path;
                 return os.str();
             }
+
 
         private:
             static bool isValidAddress(const folly::SocketAddress &address) {

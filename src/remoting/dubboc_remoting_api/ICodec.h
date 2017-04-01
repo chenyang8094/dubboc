@@ -5,24 +5,25 @@
 #ifndef DUBBOC_ICODEC_H
 #define DUBBOC_ICODEC_H
 
-#include <remoting/dubboc_remoting_api/buffer/IChannelBuffer.h>
+#include <folly/io/IOBuf.h>
+#include <folly/io/IOBufQueue.h>
 #include "IChannel.h"
 
 namespace DUBBOC {
     namespace REMOTING {
         using namespace std;
 
-        class Codec {
+        class ICodec {
         public:
-            virtual ~Codec() {}
+            virtual ~ICodec() {}
 
         public:
 
-            virtual void encode(shared_ptr<IChannel> channel, shared_ptr<IChannelBuffer> buffer,
+            virtual void encode(shared_ptr<IChannel> channel, std::unique_ptr<folly::IOBuf> &buffer,
                                 folly::dynamic message) = 0;
 
             virtual folly::dynamic
-            decode(shared_ptr<IChannel> channel, shared_ptr<IChannelBuffer> buffer) = 0;
+            decode(shared_ptr<IChannel> channel, folly::IOBufQueue &buffer) = 0;
 
             enum DecodeResult {
                 NEED_MORE_INPUT, SKIP_SOME_INPUT

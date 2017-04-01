@@ -13,6 +13,8 @@ namespace DUBBOC {
     namespace REMOTING {
         class IChannel : virtual public IEndpoint {
         public:
+            IChannel() = default;
+
             virtual ~IChannel() {}
 
         public:
