@@ -8,6 +8,7 @@
 #include <remoting/dubboc_remoting_api/transport/AbstractClient.h>
 #include <wangle/bootstrap/ClientBootstrap.h>
 #include "WangleHandler.h"
+#include "WangleCodecAdapter.h"
 
 namespace DUBBOC {
     namespace REMOTING {
@@ -22,9 +23,10 @@ namespace DUBBOC {
         protected:
             void doOpen() override {
                 auto wangle_handler = std::make_shared<WangleHandler>(getUrl(), shared_from_this());
+                auto adapter = std::make_shared<WangleCodecAdapter>(getCodec(), getUrl(), shared_from_this());
                 bootstrap = std::make_shared<wangle::ClientBootstrap<DubbocPipeline>>();
                 bootstrap->group(std::make_shared<wangle::IOThreadPoolExecutor>(1));
-                bootstrap->pipelineFactory(std::make_shared<WangleClientPipelineFactory>(wangle_handler));
+                bootstrap->pipelineFactory(std::make_shared<WangleClientPipelineFactory>(wangle_handler,adapter));
             }
 
             void doConnect() override {
@@ -42,7 +44,7 @@ namespace DUBBOC {
                                     std::exception_ptr exce;
                                     try {
                                         old_channel->close();
-                                        LOG(INFO) << "Close old netty channel  and on create new netty channel ";
+                                        LOG(INFO) << "Close old wangle channel  and on create new netty channel ";
                                     } catch (const std::exception &e) {
                                         exce = std::current_exception();
                                     }
@@ -59,7 +61,7 @@ namespace DUBBOC {
                             if (this->isClosed()) {
                                 std::exception_ptr exce;
                                 try {
-                                    LOG(INFO) << "Close new netty channel , because the client closed.";
+                                    LOG(INFO) << "Close new wangle channel , because the client closed.";
                                     new_channel->close();
                                 } catch (...) {
                                     exce = std::current_exception();
@@ -108,15 +110,25 @@ namespace DUBBOC {
         private:
             class WangleClientPipelineFactory : public wangle::PipelineFactory<DubbocPipeline> {
             public:
-                WangleClientPipelineFactory(std::shared_ptr<WangleHandler> hanlder) {
+                WangleClientPipelineFactory(std::shared_ptr<WangleHandler> hanlder,
+                                            std::shared_ptr<WangleCodecAdapter> adapter) {
                     this->handler = handler;
+                    this->adapter = adapter;
                 }
 
                 DubbocPipeline::Ptr newPipeline(std::shared_ptr<folly::AsyncTransportWrapper> sock) {
                     auto pipeline = DubbocPipeline::create();
+                    auto transportInfo = std::make_shared<wangle::TransportInfo>();
+                    folly::SocketAddress localAddr, peerAddr;
+                    sock->getLocalAddress(&localAddr);
+                    sock->getPeerAddress(&peerAddr);
+                    transportInfo->localAddr = std::make_shared<folly::SocketAddress>(localAddr);
+                    transportInfo->remoteAddr = std::make_shared<folly::SocketAddress>(peerAddr);
+                    pipeline->setTransportInfo(transportInfo);
                     pipeline->addBack(wangle::AsyncSocketHandler(sock));
                     pipeline->addBack(wangle::EventBaseHandler());  //  ensure we can write from any thread
-
+                    pipeline->addBack(adapter->getEncoder());
+                    pipeline->addBack(adapter->getDecoder());
                     pipeline->addBack(handler);  //  业务handler
                     pipeline->finalize();
                     return pipeline;
@@ -124,6 +136,7 @@ namespace DUBBOC {
 
             private:
                 std::shared_ptr<WangleHandler> handler{nullptr};
+                std::shared_ptr<WangleCodecAdapter> adapter{nullptr};
             };
 
         private:

@@ -50,8 +50,7 @@ namespace DUBBOC {
                 folly::Future<folly::Unit> write(Context *ctx, folly::dynamic &msg) override {
                     std::unique_ptr<folly::IOBuf> buf = std::move(folly::IOBuf::create(1024));// 1K capacity
                     auto ch = std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared());
-                    auto channel = WangleChannel::getOrAddChannel(ch, outer->url,
-                                                                  outer->handler);
+                    auto channel = WangleChannel::getOrAddChannel(ch, outer->url, outer->handler);
                     std::exception_ptr exe;
                     try {
                         // buf以引用的方式传递过去
@@ -62,6 +61,7 @@ namespace DUBBOC {
 
                     WangleChannel::removeChannelIfDisconnected(ch);
 
+
                     if (exe) {
                         std::rethrow_exception(exe);
                     }
@@ -69,7 +69,7 @@ namespace DUBBOC {
                 }
 
             private:
-                shared_ptr<WangleCodecAdapter> outer;
+                shared_ptr<WangleCodecAdapter> outer{nullptr};
             };
 
             class InternalDecoder : public wangle::ByteToMessageDecoder<folly::dynamic> {
@@ -88,11 +88,11 @@ namespace DUBBOC {
                     auto channel = WangleChannel::getOrAddChannel(ch, outer->url, outer->handler);
                     result = this->outer->codec->decode(channel, buf);
 
-                    return false;
+                    return true;
                 }
 
             private:
-                shared_ptr<WangleCodecAdapter> outer;
+                shared_ptr<WangleCodecAdapter> outer{nullptr};
             };
 
         public:
@@ -105,19 +105,16 @@ namespace DUBBOC {
             }
 
         private:
-            // netty层的codec(handler)
             shared_ptr<wangle::OutboundHandler<folly::dynamic &, std::unique_ptr<folly::IOBuf>>> encoder{
                     std::make_shared<InternalEncoder>()};
             shared_ptr<wangle::ByteToMessageDecoder<folly::dynamic>> decoder{std::make_shared<InternalDecoder>()};
 
-            // dubbo层的codec
             shared_ptr<ICodec> codec{nullptr};
 
             shared_ptr<URL> url{nullptr};
             shared_ptr<IChannelHandler> handler{nullptr};
 
             int bufferSize{0};
-
         };
     }
 }

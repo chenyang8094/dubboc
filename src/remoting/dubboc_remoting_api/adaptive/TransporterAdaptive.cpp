@@ -12,12 +12,12 @@ namespace DUBBOC {
         TransporterAdaptive::bind(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
 
             if (url == nullptr) {
-
+                throw std::invalid_argument("url == null");
             }
 
             std::string extName = url->getParameter("client", url->getParameter("transporter", std::string("wangle")));
             if (extName.empty()) {
-
+                throw std::invalid_argument("url == null");
             }
 
             std::shared_ptr<ITransporter> extension = ExtensionLoader::getInstance()->LoadExtension<ITransporter>(
@@ -28,12 +28,12 @@ namespace DUBBOC {
         shared_ptr<IClient>
         TransporterAdaptive::connect(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) {
             if (url == nullptr) {
-
+                throw std::invalid_argument("url == null");
             }
 
             std::string extName = url->getParameter("server", url->getParameter("transporter", std::string("wangle")));
             if (extName.empty()) {
-
+                throw std::invalid_argument("url == null");
             }
 
             std::shared_ptr<ITransporter> extension = ExtensionLoader::getInstance()->LoadExtension<ITransporter>(

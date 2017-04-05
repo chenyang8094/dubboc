@@ -6,5 +6,6 @@
 #define DUBBOC_EXTENSIONHEADER_H
 
 #include <remoting/dubboc_remoting_api/extension/extensionInfo.h>
+#include <common/serialize/extension/extensionInfo.h>
 
 #endif //DUBBOC_EXTENSIONHEADER_H
