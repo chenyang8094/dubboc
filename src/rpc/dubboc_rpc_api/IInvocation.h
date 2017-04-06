@@ -7,12 +7,11 @@
 
 #include <folly/dynamic.h>
 #include <memory>
+#include "IInvoker.h"
 
 namespace DUBBOC {
     namespace RPC {
         using namespace std;
-
-        class IInvoker;
 
         class IInvocation {
         public:

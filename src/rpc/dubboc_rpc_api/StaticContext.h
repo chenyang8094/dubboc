@@ -4,5 +4,10 @@
 
 #ifndef DUBBOC_STATICCONTEXT_H
 #define DUBBOC_STATICCONTEXT_H
+namespace DUBBOC {
+    namespace RPC {
 
+
+    }
+}
 #endif //DUBBOC_STATICCONTEXT_H

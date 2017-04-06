@@ -13,6 +13,12 @@ namespace DUBBOC {
         using namespace std;
 
         class IResult {
+        public:
+            IResult() = default;
+
+            virtual ~IResult() { ] }
+
+        public:
 
             /**
              * Get invoke result.

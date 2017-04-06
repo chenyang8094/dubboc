@@ -14,7 +14,7 @@
 namespace DUBBOC {
     namespace RPC {
         using namespace std;
-        using namespace DUBBOC::COMMON:
+        using namespace DUBBOC::COMMON;
 
         class RpcContext {
         public:
@@ -31,8 +31,8 @@ namespace DUBBOC {
                 return LOCAL.get();
             }
 
-            Future<folly::dynamic> &getFuture() const {
-                return future;
+            folly::Future<folly::dynamic> &getFuture() const {
+                return std::move(future);
             }
 
             const list<shared_ptr<URL>, allocator<shared_ptr<URL>>> &getUrls() const {
@@ -128,6 +128,7 @@ namespace DUBBOC {
             }
 
         private:
+            // 注意保证在move之后future的有效性
             folly::Future<folly::dynamic> future;
             list<shared_ptr<URL>> urls;
             shared_ptr<URL> url;

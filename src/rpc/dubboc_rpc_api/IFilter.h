@@ -41,7 +41,7 @@ namespace DUBBOC {
              */
             virtual shared_ptr<IResult> invoke(shared_ptr<IInvoker> invoker,shared_ptr<IInvocation> invocation) = 0;
 
-        }
+        };
     }
 }
 #endif //DUBBOC_IFILTER_H

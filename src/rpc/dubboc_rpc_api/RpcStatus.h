@@ -5,5 +5,10 @@
 
 #ifndef DUBBOC_RPCSTATUS_H
 #define DUBBOC_RPCSTATUS_H
+namespace DUBBOC {
+    namespace RPC {
 
+
+    }
+}
 #endif //DUBBOC_RPCSTATUS_H

@@ -1,0 +1,8 @@
+//
+// Created by 云海 on 2017/4/6.
+//
+
+#ifndef DUBBOC_ABSTRACTPROTOCOL_H
+#define DUBBOC_ABSTRACTPROTOCOL_H
+
+#endif //DUBBOC_ABSTRACTPROTOCOL_H
