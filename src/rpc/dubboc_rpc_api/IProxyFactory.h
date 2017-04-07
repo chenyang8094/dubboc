@@ -15,6 +15,7 @@ namespace DUBBOC {
         using namespace std;
         using namespace DUBBOC::COMMON;
 
+        //@SPI
         class IProxyFactory {
         public:
             IProxyFactory() = default;
@@ -44,7 +45,6 @@ namespace DUBBOC {
              * 用于provider端获取一个调用接口实现的invoker
              */
             virtual shared_ptr<IInvoker> getInvoker(shared_ptr<IGenericService> proxy, shared_ptr<URL> url) = 0;
-
         };
     }
 }

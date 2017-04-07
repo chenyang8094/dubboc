@@ -39,7 +39,7 @@ namespace DUBBOC {
              */
             virtual void destroy() = 0;
 
-        }
+        };
     }
 }
 #endif //DUBBOC_INODE_H

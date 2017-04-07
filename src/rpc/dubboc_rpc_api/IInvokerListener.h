@@ -7,12 +7,14 @@
 
 #include <memory>
 
+
 namespace DUBBOC {
     namespace RPC {
         using namespace std;
 
         class IInvoker;
 
+        //@SPI
         class IInvokerListener {
         public:
             IInvokerListener() = default;

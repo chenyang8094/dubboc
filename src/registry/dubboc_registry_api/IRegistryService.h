@@ -13,7 +13,7 @@
 namespace DUBBOC {
     namespace REGISTRY {
         using namespace std;
-        using namespace DUBBOC::COMMON:
+        using namespace DUBBOC::COMMON;
 
         class IRegistryService {
         public:

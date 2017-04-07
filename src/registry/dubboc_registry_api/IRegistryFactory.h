@@ -12,6 +12,7 @@ namespace DUBBOC {
         using namespace DUBBOC::COMMON;
         using namespace std;
 
+        //@SPI("zookeeper")
         class IRegistryFactory {
         public:
             IRegistryFactory() = default;
@@ -35,6 +36,7 @@ namespace DUBBOC {
              * @param url 注册中心地址，不允许为空
              * @return 注册中心引用，总不返回空
              */
+            //@Adaptive({"protocol"})
             virtual shared_ptr<IRegistry> getRegistry(shared_ptr<URL> url) = 0;
 
         };

@@ -5,4 +5,6 @@
 #ifndef DUBBOC_EXTENSIONINFO_H
 #define DUBBOC_EXTENSIONINFO_H
 
+#include <rpc/dubboc_rpc_api/proxy/ProxyFactory.h>
+
 #endif //DUBBOC_EXTENSIONINFO_H

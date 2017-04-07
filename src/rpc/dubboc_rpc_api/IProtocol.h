@@ -14,6 +14,7 @@ namespace DUBBOC {
         using namespace std;
         using namespace DUBBOC::COMMON:
 
+        //@SPI("dubbo")
         class IProtocol {
         public:
             IProtocol() = default;
@@ -39,7 +40,7 @@ namespace DUBBOC {
              * @return exporter 暴露服务的引用，用于取消暴露
              * @throws RpcException 当暴露服务出错时抛出，比如端口已占用
              */
-
+            // @Adaptive
             virtual shared_ptr<IExporter> export(shared_ptr<IInvoker> invoker)  = 0;
 
             /**
@@ -52,7 +53,7 @@ namespace DUBBOC {
              * @return invoker 服务的本地代理
              * @throws RpcException 当连接服务提供方失败时抛出
              */
-
+            // @Adaptive
             virtual shared_ptr<IInvoker> refer(shared_ptr<URL> url) = 0;
 
             /**

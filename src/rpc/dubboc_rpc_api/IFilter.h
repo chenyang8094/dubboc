@@ -13,8 +13,9 @@
 
 namespace DUBBOC {
     namespace RPC {
-        using  namespace std;
+        using namespace std;
 
+        //@SPI
         class IFilter {
         public:
             IFilter() = default;
@@ -39,7 +40,7 @@ namespace DUBBOC {
              * @return invoke result.
              * @throws RpcException
              */
-            virtual shared_ptr<IResult> invoke(shared_ptr<IInvoker> invoker,shared_ptr<IInvocation> invocation) = 0;
+            virtual shared_ptr<IResult> invoke(shared_ptr<IInvoker> invoker, shared_ptr<IInvocation> invocation) = 0;
 
         };
     }

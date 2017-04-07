@@ -54,8 +54,8 @@ namespace DUBBOC {
 
 
         private:
-            using subscribed_type=std::unordered_map<shared_ptr<URL>, shared_ptr<unordered_set<INotifyListener>>>;
-            using notified_type=std::unordered_map<shared_ptr<URL>, shared_ptr<unordered_map<string, shared_ptr<list<shared_ptr<URL>>>>>>;
+//            using subscribed_type=std::unordered_map<shared_ptr<URL>, shared_ptr<unordered_set<INotifyListener>>>;
+//            using notified_type=std::unordered_map<shared_ptr<URL>, shared_ptr<unordered_map<string, shared_ptr<list<shared_ptr<URL>>>>>>;
 
             // URL地址分隔符，用于文件缓存中，服务提供者URL分隔
             static char URL_SEPARATOR;
@@ -68,8 +68,8 @@ namespace DUBBOC {
             bool syncSaveFile;
             std::atomic_ulong lastCacheChanged;
             set<shared_ptr<URL>> registered;
-            shared_ptr<subscribed_type> subscribed{make_shared<subscribed_type>()};
-            shared_ptr<notified_type> notified{make_shared<notified_type>()};
+//            shared_ptr<subscribed_type> subscribed{make_shared<subscribed_type>()};
+//            shared_ptr<notified_type> notified{make_shared<notified_type>()};
         };
     }
 }

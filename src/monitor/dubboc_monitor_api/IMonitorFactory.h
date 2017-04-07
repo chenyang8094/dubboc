@@ -12,6 +12,7 @@ namespace DUBBOC {
         using namespace DUBBOC::COMMON;
         using namespace std;
 
+        //@SPI("dubboc")
         class IMonitorFactory {
         public:
             IMonitorFactory() = default;
@@ -25,6 +26,7 @@ namespace DUBBOC {
              * @param url
              * @return monitor
              */
+            //@Adaptive("protocol")
             virtual shared_ptr<IMonitor> getMonitor(shared_ptr<URL> url) = 0;
 
         };

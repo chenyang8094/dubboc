@@ -73,7 +73,7 @@ namespace DUBBOC {
                 this->invoker = invoker;
             }
 
-            shared_ptr<IInvoker> getInvoker() {
+            shared_ptr<IInvoker> getInvoker() override {
                 return invoker;
             }
 
@@ -81,7 +81,7 @@ namespace DUBBOC {
                 this->invoker = invoker;
             }
 
-            string getMethodName() const {
+            string getMethodName() override {
                 return methodName;
             }
 
@@ -89,7 +89,7 @@ namespace DUBBOC {
                 RpcInvocation::methodName = methodName;
             }
 
-            folly::dynamic getParameterTypes() const {
+            folly::dynamic getParameterTypes() override {
                 return parameterTypes;
             }
 
@@ -97,7 +97,7 @@ namespace DUBBOC {
                 this->parameterTypes = parameterTypes;
             }
 
-            folly::dynamic getArguments() const {
+            folly::dynamic getArguments() override {
                 return arguments;
             }
 
@@ -136,11 +136,11 @@ namespace DUBBOC {
                     return;
                 }
                 for (auto &it : attachments.items()) {
-                    setAttachmentIfAbsent(it.first, it.second);
+                    setAttachmentIfAbsent(it.first.asString(), it.second.asString());
                 }
             }
 
-            string getAttachment(const string &key) {
+            string getAttachment(const string &key) override {
                 if (attachments == nullptr) {
                     return "";
                 }
@@ -152,7 +152,7 @@ namespace DUBBOC {
                 return "";
             }
 
-            string getAttachment(const string &key, const string &defaultValue) {
+            string getAttachment(const string &key, const string &defaultValue) override {
                 if (attachments == nullptr) {
                     return defaultValue;
                 }
@@ -161,6 +161,10 @@ namespace DUBBOC {
                     return defaultValue;
                 }
                 return value->asString();
+            }
+
+            folly::dynamic getAttachments() override {
+                return attachments;
             }
 
         private:

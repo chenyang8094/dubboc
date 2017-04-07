@@ -16,7 +16,7 @@ namespace DUBBOC {
         public:
             IResult() = default;
 
-            virtual ~IResult() { ] }
+            virtual ~IResult() {  }
 
         public:
 
@@ -32,7 +32,7 @@ namespace DUBBOC {
              *
              * @return exception. if no exception return null.
              */
-            virtual std::exception getException() = 0;
+            virtual std::exception_ptr getException() = 0;
 
             /**
              * Has exception.
@@ -55,7 +55,7 @@ namespace DUBBOC {
              * @return result.
              * @throws if has exception throw it.
              */
-            virtual folly::dynamic recreate()  = 0;
+            virtual folly::dynamic recreate() = 0;
 
 
             /**

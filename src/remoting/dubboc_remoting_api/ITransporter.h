@@ -19,6 +19,7 @@ namespace DUBBOC {
 
         class IChannelHandler;
 
+        //@SPI("wangle")
         class ITransporter {
         public:
             ITransporter() = default;
@@ -37,6 +38,7 @@ namespace DUBBOC {
                *
                * 作为服务端，注意bind之后返回的是一个Server，而参数是要监听的url和其对应的dubbo handler
                */
+            // @Adaptive({Constants::SERVER_KEY, Constants::TRANSPORTER_KEY})
             virtual shared_ptr<IServer> bind(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) = 0;
 
             /**
@@ -50,6 +52,7 @@ namespace DUBBOC {
              *
              * 作为客户端，注意connect之后返回的是一个Client，其参数为要连接的url和对应的dubbo hanlder
              */
+            // @Adaptive({Constants::CLIENT_KEY, Constants::TRANSPORTER_KEY})
             virtual shared_ptr<IClient> connect(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) = 0;
         };
     }

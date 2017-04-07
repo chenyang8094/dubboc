@@ -24,14 +24,10 @@ namespace DUBBOC {
             }
 
         public:
-            folly::dynamic recreate() {
+            folly::dynamic recreate() override {
                 if (exception != nullptr) {
                     std::rethrow_exception(exception);
                 }
-                return result;
-            }
-
-            folly::dynamic getValue() const {
                 return result;
             }
 
@@ -39,20 +35,24 @@ namespace DUBBOC {
                 this->result = result;
             }
 
-            exception_ptr getException() const {
+            exception_ptr getException() override {
                 return exception;
+            }
+
+            folly::dynamic getValue() override {
+                return nullptr;
+            }
+
+            folly::dynamic getAttachments() override {
+                return nullptr;
             }
 
             void setException(exception_ptr exception) {
                 this->exception = exception;
             }
 
-            bool hasException() {
+            bool hasException() override {
                 return exception != nullptr;
-            }
-
-            folly::dynamic getAttachments() const {
-                return attachments;
             }
 
             void setAttachments(const folly::dynamic &attachments) {
@@ -62,7 +62,7 @@ namespace DUBBOC {
                 folly::dynamic::merge(this->attachments, attachments);
             }
 
-            string getAttachment(const string &key) {
+            string getAttachment(const string &key) override {
                 auto value = attachments.get_ptr(key);
                 if (value) {
                     return value->asString();
@@ -70,7 +70,7 @@ namespace DUBBOC {
                 return "";
             }
 
-            string getAttachment(const string &key, const string &defaultValue) {
+            string getAttachment(const string &key, const string &defaultValue) override {
                 auto result = attachments.get_ptr(key);
                 if (result == nullptr || result->asString().empty()) {
                     return defaultValue;

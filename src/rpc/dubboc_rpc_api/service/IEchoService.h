@@ -20,7 +20,7 @@ namespace DUBBOC {
 
 
         public:
-            folly::dynamic $echo(const folly::dynamic &message);
+            virtual folly::dynamic $echo(const folly::dynamic &message) = 0;
         };
 
     }
