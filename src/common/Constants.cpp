@@ -319,7 +319,7 @@ namespace DUBBOC {
 
         const string Constants::REVISION_KEY = "revision";
 
-        const string Constants::DUBBO_VERSION_KEY = "dubbo";
+        const string Constants::DUBBOC_VERSION_KEY = "dubboc";
 
         const string Constants::HESSIAN_VERSION_KEY = "hessian.version";
 

@@ -4,5 +4,9 @@
 
 #ifndef DUBBOC_REPLIERDISPATCHER_H
 #define DUBBOC_REPLIERDISPATCHER_H
+namespace DUBBOC {
+    namespace REMOTING {
 
+    }
+}
 #endif //DUBBOC_REPLIERDISPATCHER_H

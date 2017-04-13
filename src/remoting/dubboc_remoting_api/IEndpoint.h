@@ -8,6 +8,7 @@
 #include <common/URL.h>
 #include <folly/SocketAddress.h>
 #include "IChannelHandler.h"
+#include <boost/any.hpp>
 
 namespace DUBBOC {
     namespace REMOTING {
@@ -44,6 +45,11 @@ namespace DUBBOC {
              *
              * @param message
              * @throws RemotingException
+             *
+             *
+             *
+             *  remoting层的传输对象全部为dynamic(dynamic理论上对对象的表示都是完备的)，这样便于扩展和序列化
+             *  在dynmaic表示自定义对象时，需要加上@type标识字段
              */
             virtual void send(const folly::dynamic &message) = 0;
 

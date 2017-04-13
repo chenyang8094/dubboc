@@ -4,5 +4,9 @@
 
 #ifndef DUBBOC_HEARTBEATTASK_H
 #define DUBBOC_HEARTBEATTASK_H
+namespace DUBBOC {
+    namespace REMOTING {
 
+    }
+}
 #endif //DUBBOC_HEARTBEATTASK_H

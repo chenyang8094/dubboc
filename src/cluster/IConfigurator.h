@@ -13,11 +13,11 @@ namespace DUBBOC {
         using namespace std;
         using namespace DUBBOC::COMMON;
 
-        class Configurator {
+        class IConfigurator {
         public:
-            Configurator() = default;
+            IConfigurator() = default;
 
-            virtual ~Configurator() {}
+            virtual ~IConfigurator() {}
 
         public:
 

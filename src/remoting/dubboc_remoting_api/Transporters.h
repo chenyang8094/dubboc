@@ -6,6 +6,7 @@
 #define DUBBOC_TRANSPORTERS_H
 
 #include <iostream>
+#include <list>
 #include <common/ExtensionLoader.h>
 #include "IServer.h"
 #include "IClient.h"
@@ -19,12 +20,12 @@ namespace DUBBOC {
         class Transporters {
         public:
 
-            static shared_ptr<IServer> bind(const string &url, shared_ptr<IChannelHandler>... handler) {
+            static shared_ptr<IServer> bind(const string &url, const list<shared_ptr<IChannelHandler>> & handler) {
 //                return bind(URL.valueOf(url), handler);
                 return nullptr;
             }
 
-            static shared_ptr<IServer> bind(shared_ptr<URL> url, shared_ptr<IChannelHandler>... handlers) {
+            static shared_ptr<IServer> bind(shared_ptr<URL> url, const list<shared_ptr<IChannelHandler>> & handlers) {
                 if (url == nullptr) {
 
                 }
@@ -45,12 +46,12 @@ namespace DUBBOC {
                 return nullptr;
             }
 
-            static shared_ptr<IClient> connect(const string &url, shared_ptr<IChannelHandler>... handler) {
+            static shared_ptr<IClient> connect(const string &url, const list<shared_ptr<IChannelHandler>> & handler) {
 //                return connect(URL.valueOf(url), handler);
                 return nullptr;
             }
 
-            static shared_ptr<IClient> connect(shared_ptr<URL> url, shared_ptr<IChannelHandler>... handlers) {
+            static shared_ptr<IClient> connect(shared_ptr<URL> url, const list<shared_ptr<IChannelHandler>> & handlers) {
                 if (url == nullptr) {
 
                 }

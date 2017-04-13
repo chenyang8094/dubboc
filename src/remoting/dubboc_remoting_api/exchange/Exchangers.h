@@ -4,5 +4,9 @@
 
 #ifndef DUBBOC_EXCHANGERS_H
 #define DUBBOC_EXCHANGERS_H
+namespace DUBBOC {
+    namespace REMOTING {
 
+    }
+}
 #endif //DUBBOC_EXCHANGERS_H

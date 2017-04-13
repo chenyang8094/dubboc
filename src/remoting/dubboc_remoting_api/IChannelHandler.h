@@ -7,12 +7,15 @@
 
 #include <iostream>
 #include <folly/dynamic.h>
+#include <boost/any.hpp>
+
 
 namespace DUBBOC {
     namespace REMOTING {
         using namespace std;
 
         class IChannel;
+
         class IChannelHandler {
         public:
             virtual ~IChannelHandler() {}
@@ -54,7 +57,7 @@ namespace DUBBOC {
              * @param channel channel.
              * @param exception exception.
              */
-            virtual void caught(shared_ptr<IChannel> channel, const std::exception &exception) = 0;
+            virtual void caught(shared_ptr<IChannel> channel, std::exception_ptr exception) = 0;
         };
     }
 }

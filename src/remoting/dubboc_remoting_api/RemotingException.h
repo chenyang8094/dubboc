@@ -29,7 +29,6 @@ namespace DUBBOC {
         private:
             folly::SocketAddress localAddress;
             folly::SocketAddress remoteAddress;
-
         };
 
     }

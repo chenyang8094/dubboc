@@ -77,10 +77,22 @@ namespace DUBBOC {
                 }
                 return os.str();
             }
-//        public:
-//            friend  void operator=(shared_ptr<Request> request, const folly::dynamic &dynamic);
-//            friend  void operator=(folly::dynamic &dynamic, shared_ptr<Request> request);
+
+            const folly::dynamic &GetDynamic() {
+                if (inner_dynamic_cache.empty()) {
+                    inner_dynamic_cache["@type"] = "Request";
+                    inner_dynamic_cache["mId"] = mId;
+                    inner_dynamic_cache["mVersion"] = mVersion;
+                    inner_dynamic_cache["mEvent"] = mEvent;
+                    inner_dynamic_cache["mTwoWay"] = mTwoWay;
+                    inner_dynamic_cache["mBroken"] = mBroken;
+                    inner_dynamic_cache["mData"] = mData;
+                }
+                return inner_dynamic_cache;
+            }
+
         private:
+            folly::dynamic inner_dynamic_cache{folly::dynamic::object};
             static std::atomic_long INVOKE_ID;//原子计数  用于产生invoke id
         };
 

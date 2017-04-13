@@ -163,6 +163,7 @@ namespace DUBBOC {
                 }
             }
 
+        public:
             static shared_ptr<DefaultFuture> getFuture(long id) {
                 folly::RWSpinLock::ReadHolder readHolder(futures_rwlock);
                 auto iter = FUTURES.find(id);

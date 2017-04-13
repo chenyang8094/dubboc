@@ -167,7 +167,21 @@ namespace DUBBOC {
                 return attachments;
             }
 
+
+            folly::dynamic const & GetDynamic(){
+                if(inner_dynamic_cache.empty()){
+                    inner_dynamic_cache["methodName"] = methodName;
+                    inner_dynamic_cache["parameterTypes"] = parameterTypes;
+                    inner_dynamic_cache["arguments"] = arguments;
+                    inner_dynamic_cache["attachments"] = attachments;
+                }
+                return inner_dynamic_cache;
+            }
+
+
         private:
+            folly::dynamic inner_dynamic_cache{folly::dynamic::object()};
+
             string methodName;
 
             // 参数类型全部以字符串的形式表示

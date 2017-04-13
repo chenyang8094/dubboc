@@ -4,5 +4,9 @@
 
 #ifndef DUBBOC_MULTIMESSAGE_H
 #define DUBBOC_MULTIMESSAGE_H
+namespace DUBBOC {
+    namespace REMOTING {
 
+    }
+}
 #endif //DUBBOC_MULTIMESSAGE_H

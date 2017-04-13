@@ -327,7 +327,7 @@ namespace DUBBOC {
 
             static const string REVISION_KEY;
 
-            static const string DUBBO_VERSION_KEY;
+            static const string DUBBOC_VERSION_KEY;
 
             static const string HESSIAN_VERSION_KEY;
 

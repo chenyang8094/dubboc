@@ -18,11 +18,11 @@ namespace DUBBOC {
         class IRouter;
 
         //@SPI
-        class RouterFactory {
+        class IRouterFactory {
         public:
-            RouterFactory() = default;
+            IRouterFactory() = default;
 
-            virtual ~RouterFactory() {}
+            virtual ~IRouterFactory() {}
 
         public:
             /**

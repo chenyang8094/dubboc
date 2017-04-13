@@ -89,7 +89,7 @@ namespace DUBBOC {
                 handler->received(ch, msg);
             }
 
-            virtual void caught(shared_ptr<IChannel> ch, const std::exception &ex) override {
+            virtual void caught(shared_ptr<IChannel> ch, std::exception_ptr ex) override {
                 handler->caught(ch, ex);
             }
 

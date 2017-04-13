@@ -38,11 +38,30 @@ namespace DUBBOC {
 
         public:
             void read(Context *ctx, const folly::dynamic &msg) override {
+                shared_ptr<WangleChannel> channel = WangleChannel::getOrAddChannel(
+                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
+                        handler);
 
+                folly::makeFuture().then([this, channel, &msg] {
+                    handler->received(channel, msg);
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+                });
             }
 
             folly::Future<folly::Unit> write(Context *ctx, const folly::dynamic &msg) override {
-                return ctx->fireWrite(msg);
+
+                shared_ptr<WangleChannel> channel = WangleChannel::getOrAddChannel(
+                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
+                        handler);
+
+                return ctx->fireWrite(msg).then([this, channel, &msg] {
+                    handler->sent(channel, msg);
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+                });
             }
 
             void readEOF(Context *ctx) override {
@@ -50,7 +69,15 @@ namespace DUBBOC {
             }
 
             void readException(Context *ctx, folly::exception_wrapper e) override {
-                ctx->fireClose();
+                shared_ptr<WangleChannel> channel = WangleChannel::getOrAddChannel(
+                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
+                        handler);
+                folly::makeFuture().then([this, channel, e] {
+                    handler->caught(channel, e.to_exception_ptr());
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+                });
             }
 
             void transportActive(Context *ctx) override {
@@ -58,8 +85,7 @@ namespace DUBBOC {
                         std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
                         handler);
 
-                std::exception_ptr exc;
-                try {
+                folly::makeFuture().then([this, ctx, channel] {
                     if (channel != nullptr) {
                         channels_rwSpinLock.lock();
                         folly::SocketAddress remoteAddress;
@@ -68,24 +94,45 @@ namespace DUBBOC {
                         channels_rwSpinLock.unlock();
                     }
                     handler->connected(channel);
-                } catch (const std::exception &e) {
-                    exc = std::current_exception();
-                }
-
-                WangleChannel::removeChannelIfDisconnected(
-                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
-
-                if (exc) {
-                    std::rethrow_exception(exc);
-                }
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+                });
             }
 
             void transportInactive(Context *ctx) override {
-                ctx->fireTransportInactive();
+
+                shared_ptr<WangleChannel> channel = WangleChannel::getOrAddChannel(
+                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
+                        handler);
+
+                folly::makeFuture().then([this, ctx, channel] {
+                    if (channel != nullptr) {
+                        channels_rwSpinLock.lock();
+                        folly::SocketAddress remoteAddress;
+                        ctx->getTransport()->getPeerAddress(&remoteAddress);
+                        channels->erase(remoteAddress.getAddressStr());
+                        channels_rwSpinLock.unlock();
+                    }
+                    handler->disconnected(channel);
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+
+                });
             }
 
             folly::Future<folly::Unit> writeException(Context *ctx, folly::exception_wrapper e) override {
-                return ctx->fireClose();
+                shared_ptr<WangleChannel> channel = WangleChannel::getOrAddChannel(
+                        std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()), url,
+                        handler);
+                folly::makeFuture().then([this, channel, e] {
+                    handler->caught(channel, e.to_exception_ptr());
+                }).ensure([ctx] {
+                    WangleChannel::removeChannelIfDisconnected(
+                            std::dynamic_pointer_cast<DubbocPipeline>(ctx->getPipelineShared()));
+                });
+                return folly::makeFuture();
             }
 
             folly::Future<folly::Unit> close(Context *ctx) override {
