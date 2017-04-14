@@ -27,6 +27,31 @@ namespace DUBBOC {
                 mVersion = version;
             }
 
+            Request(const folly::dynamic &obj) {
+                if (obj.get_ptr("@type") && obj.get_ptr("@type")->asString() == "Response") {
+                    if (obj.get_ptr("mId")) {
+                        this->mId = obj.get_ptr("mId")->asInt();
+                    }
+                    if (obj.get_ptr("mVersion")) {
+                        this->mVersion = obj.get_ptr("mVersion")->asString();
+                    }
+                    if (obj.get_ptr("mEvent")) {
+                        this->mEvent = obj.get_ptr("mEvent")->asBool();
+                    }
+                    if (obj.get_ptr("mStatus")) {
+                        this->mStatus = static_cast<int>(obj.get_ptr("mStatus")->asInt());
+                    }
+                    if (obj.get_ptr("mErrorMsg")) {
+                        this->mErrorMsg = obj.get_ptr("mErrorMsg")->asString();
+                    }
+                    if (obj.get_ptr("mResult")) {
+                        this->mResult = obj["mResult"];
+                    }
+                } else {
+                    throw std::invalid_argument("Response type is error.");
+                }
+            }
+
         public:
 
             static const string HEARTBEAT_EVENT;
@@ -89,6 +114,8 @@ namespace DUBBOC {
             string mErrorMsg;                   // 包含的错误信息
 
             folly::dynamic mResult;             // 结果值（比如dubbo协议中的RpcResult，这个是和具体协议有关的,比如dubbo）
+
+            folly::dynamic inner_dynamic_cache{folly::dynamic::object};
         public:
             long getMId() const;
 
@@ -104,7 +131,7 @@ namespace DUBBOC {
 
             bool isMEvent() const;
 
-            void setMEvent(bool mEvent);
+            void setMEvent(const string &mEvent);
 
             const std::string &getMErrorMsg() const;
 
@@ -113,6 +140,19 @@ namespace DUBBOC {
             const folly::dynamic &getMResult() const;
 
             void setMResult(const folly::dynamic &mResult);
+
+            const folly::dynamic &GetDynamic() {
+                if (inner_dynamic_cache.empty()) {
+                    inner_dynamic_cache["@type"] = "Response";
+                    inner_dynamic_cache["mId"] = mId;
+                    inner_dynamic_cache["mVersion"] = mVersion;
+                    inner_dynamic_cache["mEvent"] = mEvent;
+                    inner_dynamic_cache["mStatus"] = mStatus;
+                    inner_dynamic_cache["mErrorMsg"] = mErrorMsg;
+                    inner_dynamic_cache["mResult"] = mResult;
+                }
+                return inner_dynamic_cache;
+            }
 
             string toString() {
                 std::ostringstream os;

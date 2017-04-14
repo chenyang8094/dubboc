@@ -21,12 +21,37 @@ namespace DUBBOC {
                 mId = INVOKE_ID++;
             }
 
+            Request(const folly::dynamic & obj){
+                if(obj.get_ptr("@type") && obj.get_ptr("@type")->asString() == "Request"){
+                    if(obj.get_ptr("mId")){
+                        this->mId = obj.get_ptr("mId")->asInt();
+                    }
+                    if(obj.get_ptr("mVersion")){
+                        this->mVersion = obj.get_ptr("mVersion")->asString();
+                    }
+                    if(obj.get_ptr("mEvent")){
+                        this->mEvent = obj.get_ptr("mEvent")->asBool();
+                    }
+                    if(obj.get_ptr("mTwoWay")){
+                        this->mTwoWay = obj.get_ptr("mTwoWay")->asBool();
+                    }
+                    if(obj.get_ptr("mBroken")){
+                        this->mBroken = obj.get_ptr("mBroken")->asBool();
+                    }
+                    if(obj.get_ptr("mData")){
+                        this->mData = obj["mData"];
+                    }
+                }else{
+                    throw std::invalid_argument("Request type is error.");
+                }
+            }
+
             ~Request() = default;
 
         private:
-            long mId;       // 请求ID
+            long mId{0};                  // 请求ID
 
-            std::string mVersion;         // 请求的版本号
+            std::string mVersion{""};     // 请求的版本号
 
             bool mTwoWay = true;          // 是否是twoway方式
 
@@ -34,7 +59,7 @@ namespace DUBBOC {
 
             bool mBroken = false;         // 这是一个坏请求
 
-            folly::dynamic mData;         // 请求体 比如dubbo协议中的RpcInvocation
+            folly::dynamic mData{nullptr};// 请求体 比如dubbo协议中的RpcInvocation
         public:
             long getMId() const;
 

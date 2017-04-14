@@ -37,8 +37,13 @@ namespace DUBBOC {
             return mEvent;
         }
 
-        void Response::setMEvent(bool mEvent) {
-            Response::mEvent = mEvent;
+        void Response::setMEvent(const string &mEvent) {
+            this->mEvent = true;
+            if (mEvent.empty()) {
+                this->mResult = nullptr;
+            } else {
+                this->mResult = mEvent;
+            }
         }
 
         const std::string &Response::getMErrorMsg() const {
