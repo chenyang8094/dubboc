@@ -8,6 +8,7 @@
 #include <folly/SocketAddress.h>
 #include <folly/dynamic.h>
 #include "IEndpoint.h"
+#include <boost/any.hpp>
 
 namespace DUBBOC {
     namespace REMOTING {
@@ -46,15 +47,17 @@ namespace DUBBOC {
              * @param key key.
              * @return value.
              */
-            virtual folly::dynamic getAttribute(const std::string &key) = 0;
+            virtual boost::any getAttribute(const std::string &key) = 0;
 
             /**
              * set attribute.
              *
              * @param key key.
              * @param value value.
+             *
+             * 此处之所以需要boost::any，是因为value可能为一个指针类型
              */
-            virtual void setAttribute(const std::string &key, const folly::dynamic &value) = 0;
+            virtual void setAttribute(const std::string &key, const boost::any &value) = 0;
 
             /**
              * remove attribute.

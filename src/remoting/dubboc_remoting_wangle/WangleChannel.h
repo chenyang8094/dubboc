@@ -9,6 +9,7 @@
 //#include <wangle/channel/EventBaseHandler.h>
 #include <wangle/channel/Pipeline.h>
 #include <chrono>
+#include <boost/any.hpp>
 
 namespace DUBBOC {
     namespace REMOTING {
@@ -134,7 +135,7 @@ namespace DUBBOC {
                 return attributes.get_ptr(key) != nullptr;
             }
 
-            folly::dynamic getAttribute(const string &key) override {
+            boost::any getAttribute(const string &key) override {
                 folly::RWSpinLock::ReadHolder readHolder(attr_rwSpinLock);
                 if (attributes.get_ptr(key)) {
                     return attributes[key];
@@ -142,7 +143,7 @@ namespace DUBBOC {
                 return nullptr;
             }
 
-            void setAttribute(const string &key, const folly::dynamic &value) override {
+            void setAttribute(const string &key, const boost::any &value) override {
                 folly::RWSpinLock::WriteHolder writeHolder(attr_rwSpinLock);
                 if (value.isNull()) {
                     attributes.erase(key);
@@ -158,7 +159,8 @@ namespace DUBBOC {
 
         private:
             shared_ptr<DubbocPipeline> channel;
-            folly::dynamic attributes{folly::dynamic::object()};
+//            folly::dynamic attributes{folly::dynamic::object()};
+            unordered_map<string,boost::any> attributes;
             folly::RWSpinLock attr_rwSpinLock;
             static unordered_map<shared_ptr<DubbocPipeline>, shared_ptr<WangleChannel>> channelMap;
             static folly::RWSpinLock rwSpinLock;

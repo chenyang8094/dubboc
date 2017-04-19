@@ -27,7 +27,7 @@ namespace DUBBOC {
                 mVersion = version;
             }
 
-            Request(const folly::dynamic &obj) {
+            Response(const folly::dynamic &obj) {
                 if (obj.get_ptr("@type") && obj.get_ptr("@type")->asString() == "Response") {
                     if (obj.get_ptr("mId")) {
                         this->mId = obj.get_ptr("mId")->asInt();
@@ -140,6 +140,10 @@ namespace DUBBOC {
             const folly::dynamic &getMResult() const;
 
             void setMResult(const folly::dynamic &mResult);
+
+            bool isHeartbeat() {
+                return mEvent && (nullptr == mResult);// 注意这里的nullptr处理
+            }
 
             const folly::dynamic &GetDynamic() {
                 if (inner_dynamic_cache.empty()) {

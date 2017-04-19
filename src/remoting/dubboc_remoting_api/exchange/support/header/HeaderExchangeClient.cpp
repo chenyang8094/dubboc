@@ -6,6 +6,9 @@
 
 namespace DUBBOC {
     namespace REMOTING {
+
+        shared_ptr<folly::ManualExecutor> HeaderExchangeClient::scheduled{nullptr};
+
         shared_ptr<IResponseFuture> HeaderExchangeClient::request(const folly::dynamic &request) {
             return this->channel->request(request);
         }
@@ -40,11 +43,11 @@ namespace DUBBOC {
             return this->channel->hasAttribute(key);
         }
 
-        folly::dynamic HeaderExchangeClient::getAttribute(const std::string &key) {
+        boost::any HeaderExchangeClient::getAttribute(const std::string &key) {
             return this->channel->getAttribute(key);
         }
 
-        void HeaderExchangeClient::setAttribute(const std::string &key, const folly::dynamic &value) {
+        void HeaderExchangeClient::setAttribute(const std::string &key, const boost::any &value) {
             this->channel->setAttribute(key, value);
         }
 

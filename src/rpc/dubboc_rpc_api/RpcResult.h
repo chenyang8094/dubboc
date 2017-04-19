@@ -78,12 +78,22 @@ namespace DUBBOC {
                 return result->asString();
             }
 
+            folly::dynamic const & GetDynamic(){
+                if(inner_dynamic_cache.empty()){
+                    inner_dynamic_cache["result"] = result;
+                    // 此处的异常应该特殊处理一下
+                    inner_dynamic_cache["exception"] = exception;//????
+                    inner_dynamic_cache["attachments"] = attachments;
+                }
+                return inner_dynamic_cache;
+            }
+
         private:
+            folly::dynamic inner_dynamic_cache{folly::dynamic::object()};
             folly::dynamic result{nullptr};
             std::exception_ptr exception{nullptr};
             folly::dynamic attachments{folly::dynamic::object()};
         };
-
     }
 }
 #endif //DUBBOC_RPCRESULT_H

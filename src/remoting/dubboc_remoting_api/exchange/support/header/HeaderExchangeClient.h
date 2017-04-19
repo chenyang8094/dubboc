@@ -8,12 +8,13 @@
 #include <remoting/dubboc_remoting_api/exchange/IExchangeClient.h>
 #include "HeaderExchangeChannel.h"
 #include <folly/futures/ManualExecutor.h>
+#include <list>
 
 namespace DUBBOC {
     namespace REMOTING {
 
 
-        class HeaderExchangeClient : public IExchangeClient, std::enable_shared_from_this<HeaderExchangeClient> {
+        class HeaderExchangeClient : public IExchangeClient, public std::enable_shared_from_this<HeaderExchangeClient> {
         public:
             explicit HeaderExchangeClient(std::shared_ptr<IClient> client) {
                 if (client == nullptr) {
@@ -59,9 +60,9 @@ namespace DUBBOC {
 
             bool hasAttribute(const std::string &key) override;
 
-            folly::dynamic getAttribute(const std::string &key) override;
+            boost::any getAttribute(const std::string &key) override;
 
-            void setAttribute(const std::string &key, const folly::dynamic &value) override;
+            void setAttribute(const std::string &key, const boost::any &value) override;
 
             void removeAttribute(const std::string &key) override;
 
@@ -82,7 +83,8 @@ namespace DUBBOC {
         private:
             void startHeatbeatTimer() {
                 thread_local std::list<std::shared_ptr<IChannel>> providers;
-                providers.push_back(shared_from_this());
+
+//                providers.push_back(shared_from_this());
                 stopHeartbeatTimer();
                 if (heartbeat > 0) {
                     scheduled->schedule([] {
@@ -106,7 +108,7 @@ namespace DUBBOC {
 
 
         private:
-            static shared_ptr<folly::ManualExecutor> scheduled{nullptr};
+            static shared_ptr<folly::ManualExecutor> scheduled;
             int heartbeat{0};
             int heartbeatTimeout{0};
             std::shared_ptr<IClient> client{nullptr};

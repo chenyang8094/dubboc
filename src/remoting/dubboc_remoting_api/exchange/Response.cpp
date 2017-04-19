@@ -14,7 +14,7 @@ namespace DUBBOC {
         }
 
         void Response::setMId(long mId) {
-            Response::mId = mId;
+            this->mId = mId;
         }
 
         const std::string &Response::getMVersion() const {
@@ -22,7 +22,7 @@ namespace DUBBOC {
         }
 
         void Response::setMVersion(const std::string &mVersion) {
-            Response::mVersion = mVersion;
+            this->mVersion = mVersion;
         }
 
         int Response::getMStatus() const {
@@ -51,7 +51,7 @@ namespace DUBBOC {
         }
 
         void Response::setMErrorMsg(const std::string &mErrorMsg) {
-            Response::mErrorMsg = mErrorMsg;
+            this->mErrorMsg = mErrorMsg;
         }
 
         const folly::dynamic &Response::getMResult() const {
@@ -59,7 +59,7 @@ namespace DUBBOC {
         }
 
         void Response::setMResult(const folly::dynamic &mResult) {
-            Response::mResult = mResult;
+            this->mResult = mResult;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DUBBOC {
         public:
 
             virtual void encode(shared_ptr<IChannel> channel, std::unique_ptr<folly::IOBuf> &buffer,
-                                folly::dynamic message) = 0;
+                                const folly::dynamic & message) = 0;
 
             virtual folly::dynamic
             decode(shared_ptr<IChannel> channel, folly::IOBufQueue &buffer) = 0;

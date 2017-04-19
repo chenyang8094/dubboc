@@ -119,6 +119,8 @@ namespace DUBBOC {
         private:
             folly::dynamic inner_dynamic_cache{folly::dynamic::object};
             static std::atomic_long INVOKE_ID;//原子计数  用于产生invoke id
+            static const std::string HEARTBEAT_EVENT;
+            static const std::string READONLY_EVENT;
         };
 
     }

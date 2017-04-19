@@ -7,9 +7,34 @@
 #include <remoting/dubboc_remoting_api/exchange/Request.h>
 #include <remoting/dubboc_remoting_api/exchange/support/DefaultFuture.h>
 #include "HeaderExchangeChannel.h"
+#include <boost/any.hpp>
 
 namespace DUBBOC {
     namespace REMOTING {
+
+        const std::string HeaderExchangeChannel::CHANNEL_KEY{"HeaderExchangeChannel.CHANNEL"};
+
+        static shared_ptr<HeaderExchangeChannel> HeaderExchangeChannel::getOrAddChannel(shared_ptr<IChannel> ch) {
+            if (ch == nullptr) {
+                return nullptr;
+            }
+
+            std::shared_ptr<HeaderExchangeChannel> ret = boost::any_cast<std::shared_ptr<HeaderExchangeChannel>>(
+                    ch->getAttribute(CHANNEL_KEY));
+            if (ret == nullptr) {
+                ret = std::make_shared<HeaderExchangeChannel>(ch);
+                if (ch->isConnected()) {
+                    ch->setAttribute(CHANNEL_KEY, ret);
+                }
+            }
+            return ret;
+        }
+
+        static void HeaderExchangeChannel::removeChannelIfDisconnected(shared_ptr<IChannel> ch) {
+            if (ch != nullptr && !ch->isConnected()) {
+                ch->removeAttribute(CHANNEL_KEY);
+            }
+        }
 
         shared_ptr<IResponseFuture> HeaderExchangeChannel::request(const folly::dynamic &request) {
             return this->request(request, channel->getUrl()->getPositiveParameter(Constants::TIMEOUT_KEY,
@@ -73,11 +98,11 @@ namespace DUBBOC {
             return this->channel->hasAttribute(key);
         }
 
-        folly::dynamic HeaderExchangeChannel::getAttribute(const std::string &key) {
+        boost::any HeaderExchangeChannel::getAttribute(const std::string &key) {
             return this->channel->getAttribute(key);
         }
 
-        void HeaderExchangeChannel::setAttribute(const std::string &key, const folly::dynamic &value) {
+        void HeaderExchangeChannel::setAttribute(const std::string &key, const boost::any &value) {
             this->channel->setAttribute(key, value);
         }
 

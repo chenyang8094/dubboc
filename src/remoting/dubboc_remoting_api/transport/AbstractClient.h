@@ -206,14 +206,14 @@ namespace DUBBOC {
                 return channel->isConnected();
             }
 
-            folly::dynamic getAttribute(const string &key) override {
+            boost::any getAttribute(const string &key) override {
                 auto channel = getChannel();
                 if (channel == nullptr)
                     return nullptr;
                 return channel->getAttribute(key);
             }
 
-            void setAttribute(const string &key, const folly::dynamic &value) override {
+            void setAttribute(const string &key, const boost::any &value) override {
                 auto channel = getChannel();
                 if (channel == nullptr)
                     return;

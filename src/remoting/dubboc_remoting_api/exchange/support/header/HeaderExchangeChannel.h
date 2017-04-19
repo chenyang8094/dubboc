@@ -13,7 +13,7 @@ namespace DUBBOC {
         using namespace std;
 
 
-        class HeaderExchangeChannel : public IExchangeChannel, enable_shared_from_this<HeaderExchangeChannel> {
+        class HeaderExchangeChannel : public IExchangeChannel, public enable_shared_from_this<HeaderExchangeChannel> {
         public:
             explicit HeaderExchangeChannel(shared_ptr<IChannel> channel) {
                 if (channel == nullptr) {
@@ -23,6 +23,11 @@ namespace DUBBOC {
             }
 
         public:
+
+            static shared_ptr<HeaderExchangeChannel> getOrAddChannel(shared_ptr<IChannel> ch);
+
+            static void removeChannelIfDisconnected(shared_ptr<IChannel> ch);
+
             shared_ptr<IResponseFuture> request(const folly::dynamic &request) override;
 
             shared_ptr<IResponseFuture> request(const folly::dynamic &request, uint32_t timeout) override;
@@ -37,9 +42,9 @@ namespace DUBBOC {
 
             bool hasAttribute(const std::string &key) override;
 
-            folly::dynamic getAttribute(const std::string &key) override;
+            boost::any getAttribute(const std::string &key) override;
 
-            void setAttribute(const std::string &key, const folly::dynamic &value) override;
+            void setAttribute(const std::string &key, const boost::any &value) override;
 
             void removeAttribute(const std::string &key) override;
 
@@ -60,6 +65,7 @@ namespace DUBBOC {
         private:
             shared_ptr<IChannel> channel{nullptr};
             volatile bool closed{false};
+            static const std::string CHANNEL_KEY;
         };
     }
 }

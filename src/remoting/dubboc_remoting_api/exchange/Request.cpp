@@ -7,6 +7,8 @@ namespace DUBBOC {
     namespace REMOTING {
 
         std::atomic_long Request::INVOKE_ID{0};
+        const std::string Request::HEARTBEAT_EVENT{""};
+        const std::string Request::READONLY_EVENT{"R"};
 
         long Request::getMId() const {
             return mId;
