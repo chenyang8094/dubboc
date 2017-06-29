@@ -49,7 +49,7 @@ namespace DUBBOC {
         public:
             static string KEY_READ_TIMESTAMP;
             static string KEY_WRITE_TIMESTAMP;
-            // // 这些handler里面都会有其他的handler，本handler把自己的事情处理完成之后，就会调用自己包装的handler的对应方法，形成链式处理
+            // 这些handler里面都会有其他的handler，本handler把自己的事情处理完成之后，就会调用自己包装的handler的对应方法，形成链式处理
             shared_ptr<IExchangeHandler> handler{nullptr};
 
         };

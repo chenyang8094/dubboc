@@ -44,6 +44,8 @@ namespace DUBBOC {
 
 
         public:
+            void reset(shared_ptr<URL> url) override;
+
             shared_ptr<IResponseFuture> request(const folly::dynamic &request) override;
 
             shared_ptr<IResponseFuture> request(const folly::dynamic &request, uint32_t timeout) override;

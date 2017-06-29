@@ -21,27 +21,27 @@ namespace DUBBOC {
                 mId = INVOKE_ID++;
             }
 
-            Request(const folly::dynamic & obj){
-                if(obj.get_ptr("@type") && obj.get_ptr("@type")->asString() == "Request"){
-                    if(obj.get_ptr("mId")){
+            Request(const folly::dynamic &obj) {
+                if (obj.get_ptr("@type") && obj.get_ptr("@type")->asString() == "Request") {
+                    if (obj.get_ptr("mId")) {
                         this->mId = obj.get_ptr("mId")->asInt();
                     }
-                    if(obj.get_ptr("mVersion")){
+                    if (obj.get_ptr("mVersion")) {
                         this->mVersion = obj.get_ptr("mVersion")->asString();
                     }
-                    if(obj.get_ptr("mEvent")){
+                    if (obj.get_ptr("mEvent")) {
                         this->mEvent = obj.get_ptr("mEvent")->asBool();
                     }
-                    if(obj.get_ptr("mTwoWay")){
+                    if (obj.get_ptr("mTwoWay")) {
                         this->mTwoWay = obj.get_ptr("mTwoWay")->asBool();
                     }
-                    if(obj.get_ptr("mBroken")){
+                    if (obj.get_ptr("mBroken")) {
                         this->mBroken = obj.get_ptr("mBroken")->asBool();
                     }
-                    if(obj.get_ptr("mData")){
+                    if (obj.get_ptr("mData")) {
                         this->mData = obj["mData"];
                     }
-                }else{
+                } else {
                     throw std::invalid_argument("Request type is error.");
                 }
             }
@@ -119,6 +119,7 @@ namespace DUBBOC {
         private:
             folly::dynamic inner_dynamic_cache{folly::dynamic::object};
             static std::atomic_long INVOKE_ID;//原子计数  用于产生invoke id
+        public:
             static const std::string HEARTBEAT_EVENT;
             static const std::string READONLY_EVENT;
         };

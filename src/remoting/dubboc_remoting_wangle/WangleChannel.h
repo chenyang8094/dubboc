@@ -132,12 +132,14 @@ namespace DUBBOC {
 
             bool hasAttribute(const string &key) override {
                 folly::RWSpinLock::ReadHolder readHolder(attr_rwSpinLock);
-                return attributes.get_ptr(key) != nullptr;
+                auto pos = attributes.find(key);
+                return pos != attributes.end();
             }
 
             boost::any getAttribute(const string &key) override {
                 folly::RWSpinLock::ReadHolder readHolder(attr_rwSpinLock);
-                if (attributes.get_ptr(key)) {
+                auto pos = attributes.find(key);
+                if (pos != attributes.end()) {
                     return attributes[key];
                 }
                 return nullptr;
@@ -145,11 +147,12 @@ namespace DUBBOC {
 
             void setAttribute(const string &key, const boost::any &value) override {
                 folly::RWSpinLock::WriteHolder writeHolder(attr_rwSpinLock);
-                if (value.isNull()) {
-                    attributes.erase(key);
-                } else {
-                    attributes[key] = value;
+                if (boost::any_cast<decltype(nullptr)>(&value)) {
+                    if (boost::any_cast<decltype(nullptr)>(value) == nullptr) {
+                        attributes.erase(key);
+                    }
                 }
+                attributes[key] = value;
             }
 
             void removeAttribute(const string &key) override {
@@ -160,7 +163,7 @@ namespace DUBBOC {
         private:
             shared_ptr<DubbocPipeline> channel;
 //            folly::dynamic attributes{folly::dynamic::object()};
-            unordered_map<string,boost::any> attributes;
+            unordered_map<string, boost::any> attributes;
             folly::RWSpinLock attr_rwSpinLock;
             static unordered_map<shared_ptr<DubbocPipeline>, shared_ptr<WangleChannel>> channelMap;
             static folly::RWSpinLock rwSpinLock;

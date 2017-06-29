@@ -2,10 +2,12 @@
 // Created by 云海 on 2017/4/19.
 //
 #include "HeaderExchangeHandler.h"
+#include "HeaderExchangeChannel.h"
 #include <remoting/dubboc_remoting_api/exchange/Request.h>
 #include <remoting/dubboc_remoting_api/exchange/Response.h>
 #include "HeartbeatHandler.h"
 #include <remoting/dubboc_remoting_api/IChannel.h>
+#include <remoting/dubboc_remoting_api/exchange/support/DefaultFuture.h>
 
 namespace DUBBOC {
     namespace REMOTING {
@@ -51,7 +53,7 @@ namespace DUBBOC {
             }
         }
 
-        void HeaderExchangeHandler::connected(shared_ptr<IChannel> channel) override {
+        void HeaderExchangeHandler::connected(shared_ptr<IChannel> channel) {
             channel->setAttribute(KEY_READ_TIMESTAMP, std::chrono::duration_cast<std::chrono::milliseconds>(
                     std::chrono::system_clock::now().time_since_epoch()).count());
             channel->setAttribute(KEY_WRITE_TIMESTAMP, std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -60,19 +62,19 @@ namespace DUBBOC {
 
         }
 
-        void HeaderExchangeHandler::disconnected(shared_ptr<IChannel> channel) override {
+        void HeaderExchangeHandler::disconnected(shared_ptr<IChannel> channel)  {
 
         }
 
-        void HeaderExchangeHandler::sent(shared_ptr<IChannel> channel, const folly::dynamic &message) override {
+        void HeaderExchangeHandler::sent(shared_ptr<IChannel> channel, const folly::dynamic &message)  {
 
         }
 
-        void HeaderExchangeHandler::received(shared_ptr<IChannel> channel, const folly::dynamic &message) override {
+        void HeaderExchangeHandler::received(shared_ptr<IChannel> channel, const folly::dynamic &message)  {
 
         }
 
-        void HeaderExchangeHandler::caught(shared_ptr<IChannel> channel, std::exception_ptr exception) override {
+        void HeaderExchangeHandler::caught(shared_ptr<IChannel> channel, std::exception_ptr exception)  {
 
         }
     }

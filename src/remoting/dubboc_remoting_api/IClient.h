@@ -7,10 +7,13 @@
 
 #include "IEndpoint.h"
 #include "IChannel.h"
+#include <common/IResetable.h>
 
 namespace DUBBOC {
     namespace REMOTING {
-        class IClient : virtual public IEndpoint, public IChannel {
+        using  namespace DUBBOC::COMMON;
+
+        class IClient : virtual public IEndpoint, public IChannel ,public IResetable{
         public:
             virtual void reconnect() = 0;
         };

@@ -14,7 +14,7 @@ namespace DUBBOC {
 
         const std::string HeaderExchangeChannel::CHANNEL_KEY{"HeaderExchangeChannel.CHANNEL"};
 
-        static shared_ptr<HeaderExchangeChannel> HeaderExchangeChannel::getOrAddChannel(shared_ptr<IChannel> ch) {
+        shared_ptr<HeaderExchangeChannel> HeaderExchangeChannel::getOrAddChannel(shared_ptr<IChannel> ch) {
             if (ch == nullptr) {
                 return nullptr;
             }
@@ -30,7 +30,7 @@ namespace DUBBOC {
             return ret;
         }
 
-        static void HeaderExchangeChannel::removeChannelIfDisconnected(shared_ptr<IChannel> ch) {
+        void HeaderExchangeChannel::removeChannelIfDisconnected(shared_ptr<IChannel> ch) {
             if (ch != nullptr && !ch->isConnected()) {
                 ch->removeAttribute(CHANNEL_KEY);
             }

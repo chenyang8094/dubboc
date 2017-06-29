@@ -7,13 +7,14 @@
 
 #include <common/ExtensionLoader.h>
 #include <remoting/dubboc_remoting_api/ICodec.h>
+#include <common/IResetable.h>
 #include "AbstractPeer.h"
 
 namespace DUBBOC {
     namespace REMOTING {
         using namespace DUBBOC::COMMON;
 
-        class AbstractEndpoint : public AbstractPeer {
+        class AbstractEndpoint : public AbstractPeer,public IResetable {
         public:
             AbstractEndpoint(shared_ptr<URL> url, shared_ptr<IChannelHandler> handler) : AbstractPeer(url, handler) {
                 this->codec = getChannelCodec(url);
@@ -23,7 +24,7 @@ namespace DUBBOC {
 
             }
 
-            virtual void reset(shared_ptr<URL> url) {
+            void reset(shared_ptr<URL> url) override {
                 if (isClosed()) {
                     throw std::runtime_error(std::string("Failed to reset parameters ")
                                              + url->toFullString() + ", cause: Channel closed. channel: " +

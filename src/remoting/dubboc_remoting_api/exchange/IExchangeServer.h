@@ -28,7 +28,7 @@ namespace DUBBOC {
              *
              * @return channels
              */
-            virtual list<shared_ptr<IExchangeChannel>> getExchangeChannels() = 0;
+            virtual shared_ptr<list<shared_ptr<IExchangeChannel>>> getExchangeChannels() = 0;
 
             /**
              * get channel.

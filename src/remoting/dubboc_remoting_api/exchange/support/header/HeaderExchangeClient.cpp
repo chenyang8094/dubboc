@@ -83,5 +83,9 @@ namespace DUBBOC {
         bool HeaderExchangeClient::isClosed() {
             return this->channel->isClosed();
         }
+
+        void HeaderExchangeClient::reset(shared_ptr<URL> url) {
+            this->client->reset(url);
+        }
     }
 }

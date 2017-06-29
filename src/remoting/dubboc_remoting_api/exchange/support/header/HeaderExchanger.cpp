@@ -15,14 +15,14 @@ namespace DUBBOC {
         HeaderExchanger::bind(shared_ptr<URL> url, shared_ptr<IExchangeHandler> handler) {
             list<shared_ptr<IChannelHandler>> handlers;
             handlers.push_back(make_shared<DecodeHandler>(make_shared<HeaderExchangeHandler>(handler)));
-            return make_shared<HeaderExchangeServer>(Transporters::connect(url,handlers));
+            return make_shared<HeaderExchangeServer>(Transporters::bind(url,handlers));
         }
 
         shared_ptr<IExchangeClient>
         HeaderExchanger::connect(shared_ptr<URL> url, shared_ptr<IExchangeHandler> handler) {
             list<shared_ptr<IChannelHandler>> handlers;
             handlers.push_back(make_shared<DecodeHandler>(make_shared<HeaderExchangeHandler>(handler)));
-            return make_shared<HeaderExchangeClient>(Transporters::bind(url, handlers));
+            return make_shared<HeaderExchangeClient>(Transporters::connect(url, handlers));
         }
     }
 }

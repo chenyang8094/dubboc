@@ -6,13 +6,15 @@
 #define DUBBOC_ISERVER_H
 
 #include "IEndpoint.h"
+#include <common/IResetable.h>
 
 namespace DUBBOC {
     namespace REMOTING {
+        using  namespace DUBBOC::COMMON;
 
         class IChannel;
 
-        class IServer : virtual public IEndpoint {
+        class IServer : virtual public IEndpoint, public IResetable {
         public:
             /**
              * is bound.

@@ -142,7 +142,7 @@ namespace DUBBOC {
             void setMResult(const folly::dynamic &mResult);
 
             bool isHeartbeat() {
-                return mEvent && (nullptr == mResult);// 注意这里的nullptr处理
+                return mEvent && (mResult.isNull());// 注意这里的nullptr处理
             }
 
             const folly::dynamic &GetDynamic() {
