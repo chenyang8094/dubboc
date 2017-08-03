@@ -1,0 +1,9 @@
+.idea/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+bin/
+cmake-build-debug/
+cmake_install.cmake
+dubboc.cbp
+lib/
